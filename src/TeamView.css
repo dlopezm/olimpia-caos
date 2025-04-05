@@ -1,0 +1,29 @@
+.team {
+    width: 45%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .team-averages {
+    margin-bottom: 10px;
+    text-align: center; /* Center the text for averages */
+  }
+  
+  .team-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    justify-items: center; /* Center the items horizontally */
+  }
+  
+  .team-item {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%; /* Ensure the items take full width of the grid cell */
+    box-sizing: border-box; /* Include padding in the width */
+  }
+  

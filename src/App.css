@@ -18,7 +18,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  width: 100px;
+  width: 150px; 
+  box-sizing: border-box; 
 }
 
 .player-item.selected {
@@ -27,8 +28,23 @@
 }
 
 .selected-item {
-  background-color: #f8d7da;
-  border-color: #f5c2c7;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+  width: 150px; 
+
+.player-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+}
+
+.player-attributes {
+  display: flex;
+  flex-direction: column; 
+  gap: 4px; 
 }
 
 .generate-button {
@@ -54,4 +70,5 @@
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+  width: 150px; /* Ensure consistent width */
 }

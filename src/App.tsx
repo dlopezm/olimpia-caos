@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 import { Player, PLAYERS } from './data/players';
+import { SelectedPlayer } from './SelectedPlayer';
+import TeamView from './TeamView';
 
 export const App = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
@@ -28,7 +30,7 @@ export const App = () => {
 
   return (
     <div className="App">
-      <h1>Selecciona Jugadors</h1>
+      <h3>Convocatòria</h3>
       <div className="player-list">
         {PLAYERS.map((player, index) => (
           <div
@@ -40,35 +42,13 @@ export const App = () => {
           </div>
         ))}
       </div>
-      <h2>Convocatòria</h2>
-      <div className="selected-list">
-        {selectedPlayers.map((player, index) => (
-          <div key={index} className="selected-item">
-            {player.name} - Atac: {player.attack}, Defensa: {player.defense}, Físic: {player.physical}, Visió: {player.vision}
-          </div>
-        ))}
-      </div>
       <button onClick={generateTeams} className="generate-button">
         Genera equips
       </button>
       {teams && (
         <div className="teams-container">
-          <div className="team">
-            <h3>Team 1</h3>
-            {teams.team1.map((player, index) => (
-              <div key={index} className="team-item">
-                {player.name} - Atac: {player.attack}, Defensa: {player.defense}, Físic: {player.physical}, Visió: {player.vision}
-              </div>
-            ))}
-          </div>
-          <div className="team">
-            <h3>Team 2</h3>
-            {teams.team2.map((player, index) => (
-              <div key={index} className="team-item">
-                {player.name} - Atac: {player.attack}, Defensa: {player.defense}, Físic: {player.physical}, Visió: {player.vision}
-              </div>
-            ))}
-          </div>
+          <TeamView team={teams.team1} teamName="Equip Clar" />
+          <TeamView team={teams.team2} teamName="Equip Fosc" />
         </div>
       )}
     </div>
