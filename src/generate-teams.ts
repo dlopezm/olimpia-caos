@@ -26,7 +26,7 @@ const calculateTotalsPerStat = (team: Player[]) => {
     };
 };
 
-const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
+export const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
     const totals1 = calculateTotalsPerStat(team1);
     const totals2 = calculateTotalsPerStat(team2);
 
