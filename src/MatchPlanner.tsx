@@ -106,7 +106,7 @@ export const MatchPlanner = () => {
                             <div>Igualtat màxima al terreny de joc!</div>
                         ) : (
                             <div>
-                                Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}
+                                Diferència de {Math.abs(teams.difference).toFixed(2)} punts de crack a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}
                             </div>
                         )}
                     </div>
