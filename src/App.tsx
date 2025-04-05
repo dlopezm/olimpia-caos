@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { Player } from './data/players';
 import { TeamView } from './TeamView';
-import { generateTeams } from './generate-teams';
+import { generateTeams, sortTeamsAndUpdateDifference } from './generate-teams';
 import { sanityClient } from './sanity-client';
 
 export const App = () => {
@@ -40,6 +40,32 @@ export const App = () => {
     setTeams(teams);
   };
 
+  const onClickPlayer = (player: Player) => {
+    if (!teams) return;
+    const playerIndex = teams.team1.indexOf(player);
+    const playerIndex2 = teams.team2.indexOf(player);
+    if (playerIndex !== -1) {
+      setTeams((prevTeams) => {
+        if (!prevTeams) return null;
+        const newTeam1 = [...prevTeams.team1];
+        newTeam1.splice(playerIndex, 1);
+        const newTeam2 = [...prevTeams.team2, player];
+        return sortTeamsAndUpdateDifference(newTeam1, newTeam2);
+      }
+      );
+    }
+    if (playerIndex2 !== -1) {
+      setTeams((prevTeams) => {
+        if (!prevTeams) return null;
+        const newTeam2 = [...prevTeams.team2];
+        newTeam2.splice(playerIndex2, 1);
+        const newTeam1 = [...prevTeams.team1, player];
+        return sortTeamsAndUpdateDifference(newTeam1, newTeam2);
+      }
+      );
+    }
+  };
+
   return (
     <div className="App">
       <h3>Convocatòria</h3>
@@ -59,10 +85,14 @@ export const App = () => {
       </button>
       {teams && (
         <>
-          <div>Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}</div>
+          {teams.difference === 0 ? (
+            <div>Igualtat màxima al terreny de joc!</div>) : (
+            <div>Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}</div>
+          )
+          }
           <div className="teams-container">
-            <TeamView team={teams.team1} teamName="Equip ◻️" />
-            <TeamView team={teams.team2} teamName="Equip ◼️" />
+            <TeamView team={teams.team1} teamName="Equip ◻️" onClickPlayer={onClickPlayer} />
+            <TeamView team={teams.team2} teamName="Equip ◼️" onClickPlayer={onClickPlayer} />
           </div>
         </>
       )}

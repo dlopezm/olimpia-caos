@@ -1,10 +1,15 @@
 import { Player } from "./data/players";
 
-export const SelectedPlayer = ({ player }: { player: Player }) => {
+interface SelectedPlayerProps {
+    player: Player;
+    onClick?: (player: Player) => void;
+}
+
+export const SelectedPlayer = ({ player, onClick }: SelectedPlayerProps) => {
     const average = (player.attack + player.defense + player.physical + player.vision) / 4;
   
     return (
-      <div className="selected-item">
+      <div className="selected-item" onClick={() => onClick?.(player)}>
         <div className="player-name">{player.name}</div>
         <div className="player-attributes">
           <div>Mitjana: {average.toFixed(2)}</div>

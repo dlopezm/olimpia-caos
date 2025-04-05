@@ -7,9 +7,10 @@ import { AttributeBar } from './AttributeBar';
 interface TeamProps {
   team: Player[];
   teamName: string;
+  onClickPlayer: (player: Player) => void;
 }
 
-export const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
+export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer }) => {
   const averages = useMemo(() => {
     const totalPlayers = team.length;
     const sums = team.reduce(
@@ -45,7 +46,7 @@ export const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
       </div>
       <div className="team-players-grid">
         {team.map((player, index) => (
-          <SelectedPlayer key={index} player={player} />
+          <SelectedPlayer key={index} player={player} onClick={onClickPlayer} />
         ))}
       </div>
     </div>
