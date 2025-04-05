@@ -25,7 +25,7 @@ export const App = () => {
   }, []);
 
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
-  const [teams, setTeams] = useState<{ team1: Player[], team2: Player[] } | null>(null);
+  const [teams, setTeams] = useState<{ team1: Player[], team2: Player[], difference: number } | null>(null);
 
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayers((prevSelected) =>
@@ -54,14 +54,17 @@ export const App = () => {
           </div>
         ))}
       </div>
-      <button onClick={onGenerateTeams} className="generate-button">
+      <button onClick={onGenerateTeams} className="generate-button" disabled={selectedPlayers.length < 2}>
         Genera equips
       </button>
       {teams && (
-        <div className="teams-container">
-          <TeamView team={teams.team1} teamName="Equip ◻️" />
-          <TeamView team={teams.team2} teamName="Equip ◼️" />
-        </div>
+        <>
+          <div>Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}</div>
+          <div className="teams-container">
+            <TeamView team={teams.team1} teamName="Equip ◻️" />
+            <TeamView team={teams.team2} teamName="Equip ◼️" />
+          </div>
+        </>
       )}
     </div>
   );

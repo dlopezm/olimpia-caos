@@ -37,7 +37,7 @@ const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
 
     const totalDiff = attackDiff + defenseDiff + physicalDiff + visionDiff + 2 * overallDiff;
 
-    return Math.abs(totalDiff);
+    return totalDiff;
 };
 
 const sortPlayers = (a: Player, b: Player) => {
@@ -49,8 +49,8 @@ const sortPlayers = (a: Player, b: Player) => {
     return a.name.localeCompare(b.name);
 }
 
-export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: Player[] } => {
-    if (playerPool.length < 2) return { team1: [], team2: [] };
+export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: Player[], difference: number } => {
+    if (playerPool.length < 2) return { team1: [], team2: [], difference: 0 };
 
     const sortedPlayers = [...playerPool].sort((a, b) => {
         const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
@@ -65,23 +65,23 @@ export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: P
     let i = 0, j = sortedPlayers.length - 1;
     while (i <= j) {
         if (i <= j) team1.push(sortedPlayers[i++]);
-        if (i <= j) team2.push(sortedPlayers[j--]);
         if (i <= j) team2.push(sortedPlayers[i++]);
         if (i <= j) team1.push(sortedPlayers[j--]);
+        if (i <= j) team2.push(sortedPlayers[j--]);
     }
 
     // Try to swap players to improve balance
     for (let k = 0; k < ITERATIONS; k++) {
         const playerIndex1 = Math.floor(Math.random() * team1.length);
         const playerIndex2 = Math.floor(Math.random() * team2.length);
-
         const originalDifference = calculateTeamDifference(team1, team2);
+
         // Swap players
         [team1[playerIndex1], team2[playerIndex2]] = [team2[playerIndex2], team1[playerIndex1]];
 
         const newDifference = calculateTeamDifference(team1, team2);
 
-        if (newDifference >= originalDifference) {
+        if (Math.abs(newDifference) >= Math.abs(originalDifference)) {
             // Revert the swap if doesn't improve the balance
             [team1[playerIndex1], team2[playerIndex2]] = [team2[playerIndex2], team1[playerIndex1]];
         }
@@ -91,10 +91,12 @@ export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: P
     team1.sort(sortPlayers);
     team2.sort(sortPlayers);
 
+    const finalDifference = calculateTeamDifference(team1, team2);
+
     if (team1[0].name > team2[0].name) {
-        return { team1: team2, team2: team1 };
+        return { team1: team2, team2: team1, difference: -finalDifference };
     }
 
-    return { team1, team2 };
+    return { team1, team2, difference: finalDifference };
 
 };
