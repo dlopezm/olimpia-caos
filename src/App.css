@@ -18,8 +18,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  width: 150px; 
-  box-sizing: border-box; 
+  width: 150px;
+  box-sizing: border-box;
 }
 
 .player-item.selected {
@@ -33,7 +33,8 @@
   padding: 10px;
   margin-bottom: 10px;
   background-color: #f8f9fa;
-  width: 150px; 
+  width: 150px;
+}
 
 .player-name {
   font-weight: bold;
@@ -43,8 +44,8 @@
 
 .player-attributes {
   display: flex;
-  flex-direction: column; 
-  gap: 4px; 
+  flex-direction: column;
+  gap: 4px;
 }
 
 .generate-button {
@@ -56,12 +57,25 @@
 
 .teams-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 20px; 
   margin-top: 20px;
 }
 
 .team {
-  width: 45%;
+  width: 45%; 
+}
+
+.team-averages {
+  margin-bottom: 10px;
+  text-align: center; 
+}
+
+.team-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  justify-items: center;
 }
 
 .team-item {
@@ -69,6 +83,6 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 10px;
-  margin-bottom: 10px;
-  width: 150px; /* Ensure consistent width */
+  width: 100%; 
+  box-sizing: border-box; 
 }
