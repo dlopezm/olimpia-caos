@@ -13,6 +13,8 @@ export const App = () => {
       try {
         const query = '*[_type == "player"]';
         const playersData = await sanityClient.fetch(query);
+        // Sort players by name
+        playersData.sort((a: Player, b: Player) => a.name.localeCompare(b.name));
         setAllPlayers(playersData);
       } catch (error) {
         console.error('Error fetching players:', error);

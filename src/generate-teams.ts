@@ -40,10 +40,18 @@ const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
     return Math.abs(totalDiff);
 };
 
+const sortPlayers = (a: Player, b: Player) => {
+    const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
+    const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
+    if (averageA !== averageB) {
+        return averageB - averageA;
+    }
+    return a.name.localeCompare(b.name);
+}
+
 export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: Player[] } => {
     if (playerPool.length < 2) return { team1: [], team2: [] };
 
-    // Sort players by their overall average attribute value
     const sortedPlayers = [...playerPool].sort((a, b) => {
         const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
         const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
@@ -73,25 +81,19 @@ export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: P
 
         const newDifference = calculateTeamDifference(team1, team2);
 
-
-        // Keep the swap if it improves the balance
         if (newDifference >= originalDifference) {
-            // Revert the swap
+            // Revert the swap if doesn't improve the balance
             [team1[playerIndex1], team2[playerIndex2]] = [team2[playerIndex2], team1[playerIndex1]];
         }
     }
 
     // Sort teams by overall average attribute value
-    team1.sort((a, b) => {
-        const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
-        const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
-        return averageB - averageA;
-    });
-    team2.sort((a, b) => {
-        const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
-        const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
-        return averageB - averageA;
-    });
+    team1.sort(sortPlayers);
+    team2.sort(sortPlayers);
+
+    if (team1[0].name > team2[0].name) {
+        return { team1: team2, team2: team1 };
+    }
 
     return { team1, team2 };
 
