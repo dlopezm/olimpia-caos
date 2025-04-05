@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tabs, TabList, TabPanel, Tab } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { MatchPlanner } from './MatchPlanner';
