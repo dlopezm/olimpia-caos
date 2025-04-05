@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 import { Player, PLAYERS } from './data/players';
-import { SelectedPlayer } from './SelectedPlayer';
 import TeamView from './TeamView';
+import { generateTeams } from './generate-teams';
 
 export const App = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
@@ -16,16 +16,9 @@ export const App = () => {
     );
   };
 
-  const generateTeams = () => {
-    if (selectedPlayers.length < 2) return;
-
-    const shuffledPlayers = [...selectedPlayers].sort(() => 0.5 - Math.random());
-    const half = Math.floor(shuffledPlayers.length / 2);
-
-    const team1 = shuffledPlayers.slice(0, half);
-    const team2 = shuffledPlayers.slice(half);
-
-    setTeams({ team1, team2 });
+  const onGenerateTeams = () => {
+    const teams = generateTeams(selectedPlayers);
+    setTeams(teams);
   };
 
   return (
@@ -42,13 +35,13 @@ export const App = () => {
           </div>
         ))}
       </div>
-      <button onClick={generateTeams} className="generate-button">
+      <button onClick={onGenerateTeams} className="generate-button">
         Genera equips
       </button>
       {teams && (
         <div className="teams-container">
-          <TeamView team={teams.team1} teamName="Equip Clar" />
-          <TeamView team={teams.team2} teamName="Equip Fosc" />
+          <TeamView team={teams.team1} teamName="Equip ◻️" />
+          <TeamView team={teams.team2} teamName="Equip ◼️" />
         </div>
       )}
     </div>
