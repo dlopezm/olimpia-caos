@@ -10,8 +10,8 @@ export const App = () => {
     <div className="app-container">
       <Tabs className="tabs-container">
         <TabList>
-          <Tab>Match Organizer</Tab>
-          <Tab>Historical Matches</Tab>
+          <Tab>Creador d'equips</Tab>
+          <Tab>Historial de partits</Tab>
         </TabList>
 
         <TabPanel>

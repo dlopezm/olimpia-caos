@@ -11,7 +11,7 @@ export const AttributeBar: React.FC<AttributeBarProps> = ({ label, value }) => {
         <div className="attribute-bar">
             <span>{label}</span>
             <div className="bar">
-                <div className="value" style={{ width: `${value * 20}%` }}>
+                <div className="value" style={{ width: `${value * 10}%` }}>
                     <span className="value-text">{value.toFixed(2)}</span>
                 </div>
             </div>

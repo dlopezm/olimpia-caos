@@ -9,10 +9,11 @@ const calculateTotalsPerStat = (team: Player[]) => {
             acc.defense += player.defense;
             acc.physical += player.physical;
             acc.vision += player.vision;
-            acc.overall += (player.attack + player.defense + player.physical + player.vision) / 4;
+            acc.technique += player.technique;
+            acc.average += player.average;
             return acc;
         },
-        { attack: 0, defense: 0, physical: 0, vision: 0, overall: 0 }
+        { attack: 0, defense: 0, physical: 0, vision: 0, average: 0, technique: 0 }
     );
 
     return {
@@ -20,7 +21,8 @@ const calculateTotalsPerStat = (team: Player[]) => {
         defense: sums.defense,
         physical: sums.physical,
         vision: sums.vision,
-        overall: sums.overall,
+        technique: sums.technique,
+        average: sums.average,
     };
 };
 
@@ -32,7 +34,8 @@ const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
     const defenseDiff = totals1.defense - totals2.defense;
     const physicalDiff = totals1.physical - totals2.physical;
     const visionDiff = totals1.vision - totals2.vision;
-    const overallDiff = (totals1.overall - totals2.overall) * 2; // Apply a weight to the overall average
+    const techniqueDiff = totals1.technique - totals2.technique;
+    const averageDiff = (totals1.average - totals2.average) * 2; // overall average is more important
 
     // Euclidean distance
     const totalDiff = Math.sqrt(
@@ -40,16 +43,15 @@ const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
         defenseDiff * defenseDiff +
         physicalDiff * physicalDiff +
         visionDiff * visionDiff +
-        overallDiff * overallDiff
+        techniqueDiff * techniqueDiff +
+        averageDiff * averageDiff
     );
 
     return totalDiff;
 };
 const sortPlayers = (a: Player, b: Player) => {
-    const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
-    const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
-    if (averageA !== averageB) {
-        return averageB - averageA;
+    if (a.average !== b.average) {
+        return b.average - a.average;
     }
     return a.name.localeCompare(b.name);
 }
@@ -66,11 +68,7 @@ export const sortTeamsAndUpdateDifference = (team1: Player[], team2: Player[]) =
 export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: Player[], difference: number } => {
     if (playerPool.length < 2) return { team1: [], team2: [], difference: 0 };
 
-    const sortedPlayers = [...playerPool].sort((a, b) => {
-        const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
-        const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
-        return averageB - averageA;
-    });
+    const sortedPlayers = [...playerPool].sort(sortPlayers);
 
     // Initialize teams by alternating players
     const team1 = [];
@@ -95,8 +93,8 @@ export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: P
 
         const newDifference = calculateTeamDifference(team1, team2);
 
-        if (Math.abs(newDifference) >= Math.abs(originalDifference)) {
-            // Revert the swap if doesn't improve the balance
+        if (Math.abs(newDifference) > Math.abs(originalDifference)) {
+            // Revert the swap if it worsens the balance
             [team1[playerIndex1], team2[playerIndex2]] = [team2[playerIndex2], team1[playerIndex1]];
         }
     }

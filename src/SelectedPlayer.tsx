@@ -5,8 +5,8 @@ interface SelectedPlayerProps {
     onClick?: (player: Player) => void;
 }
 
-export const SelectedPlayer = ({ player, onClick }: SelectedPlayerProps) => {
-    const average = (player.attack + player.defense + player.physical + player.vision) / 4;
+export const TeamPlayer = ({ player, onClick }: SelectedPlayerProps) => {
+    const average = (player.attack + player.defense + player.physical + player.vision + player.technique) / 5;
   
     return (
       <div className="selected-item" onClick={() => onClick?.(player)}>
@@ -17,6 +17,7 @@ export const SelectedPlayer = ({ player, onClick }: SelectedPlayerProps) => {
           <div>Defensa: {player.defense}</div>
           <div>Físic: {player.physical}</div>
           <div>Visió: {player.vision}</div>
+          <div>Tècnica: {player.technique}</div>
         </div>
       </div>
     );

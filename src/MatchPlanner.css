@@ -87,3 +87,38 @@
     box-sizing: border-box; 
   }
   
+  .generate-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .generate-button {
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #2235dd;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .generate-button:hover:enabled {
+    background-color: #4690fd;
+  }
+  
+  .generate-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .difference-message {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
+  

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Player } from './data/players';
 import './TeamView.css';
-import { SelectedPlayer } from './SelectedPlayer';
+import { TeamPlayer } from './SelectedPlayer';
 import { AttributeBar } from './AttributeBar';
 
 interface TeamProps {
@@ -19,10 +19,10 @@ export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer })
         acc.defense += player.defense;
         acc.physical += player.physical;
         acc.vision += player.vision;
-        acc.overall += (player.attack + player.defense + player.physical + player.vision) / 4;
+        acc.average += player.average;
         return acc;
       },
-      { attack: 0, defense: 0, physical: 0, vision: 0, overall: 0 }
+      { attack: 0, defense: 0, physical: 0, vision: 0, average: 0 }
     );
 
     return {
@@ -30,7 +30,8 @@ export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer })
       defense: (sums.defense / totalPlayers),
       physical: (sums.physical / totalPlayers),
       vision: (sums.vision / totalPlayers),
-      overall: (sums.overall / totalPlayers),
+      technique: (sums.physical / totalPlayers),
+      average: (sums.average / totalPlayers),
     };
   }, [team]);
 
@@ -38,15 +39,16 @@ export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer })
     <div className="team">
       <h3>{teamName}</h3>
       <div className="team-averages">
-        <AttributeBar label="Mitjana" value={averages.overall} />
+        <AttributeBar label="Mitjana" value={averages.average} />
         <AttributeBar label="Atac" value={averages.attack} />
         <AttributeBar label="Defensa" value={averages.defense} />
         <AttributeBar label="Físic" value={averages.physical} />
         <AttributeBar label="Visió" value={averages.vision} />
+        <AttributeBar label="Tècnica" value={averages.technique} />
       </div>
       <div className="team-players-grid">
         {team.map((player, index) => (
-          <SelectedPlayer key={index} player={player} onClick={onClickPlayer} />
+          <TeamPlayer key={index} player={player} onClick={onClickPlayer} />
         ))}
       </div>
     </div>

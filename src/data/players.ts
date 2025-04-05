@@ -5,4 +5,6 @@ export interface Player {
     defense: number;
     physical: number;
     vision: number;
+    technique: number;
+    average: number;
 }

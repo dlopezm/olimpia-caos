@@ -12,7 +12,16 @@ export const MatchPlanner = () => {
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const query = '*[_type == "player"]';
+                const query = `*[_type == "player"]{
+                    _id,
+                    name,
+                    attack,
+                    defense,
+                    physical,
+                    vision,
+                    technique,
+                    "average": (attack + defense + physical + vision + technique) / 5
+                  }`;
                 const playersData = await sanityClient.fetch(query);
                 // Sort players by name
                 playersData.sort((a: Player, b: Player) => a.name.localeCompare(b.name));
@@ -80,24 +89,34 @@ export const MatchPlanner = () => {
                     </div>
                 ))}
             </div>
-            <button onClick={onGenerateTeams} className="generate-button" disabled={selectedPlayers.length < 2}>
-                Genera equips
-            </button>
-            {
-                teams && (
-                    <>
+            <div className="generate-button-wrapper">
+                <button
+                    onClick={onGenerateTeams}
+                    className="generate-button"
+                    disabled={selectedPlayers.length < 2}
+                >
+                    Genera equips
+                </button>
+            </div>
+
+            {teams && (
+                <>
+                    <div className="difference-message">
                         {teams.difference === 0 ? (
-                            <div>Igualtat màxima al terreny de joc!</div>) : (
-                            <div>Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}</div>
-                        )
-                        }
-                        <div className="teams-container">
-                            <TeamView team={teams.team1} teamName="Equip ◻️" onClickPlayer={onClickPlayer} />
-                            <TeamView team={teams.team2} teamName="Equip ◼️" onClickPlayer={onClickPlayer} />
-                        </div>
-                    </>
-                )
-            }
+                            <div>Igualtat màxima al terreny de joc!</div>
+                        ) : (
+                            <div>
+                                Diferència de {Math.abs(teams.difference).toFixed(2)} punts màgics a favor de l'equip {teams.difference > 0 ? '◻️' : '◼️'}
+                            </div>
+                        )}
+                    </div>
+                    <div className="teams-container">
+                        <TeamView team={teams.team1} teamName="Equip ◻️" onClickPlayer={onClickPlayer} />
+                        <TeamView team={teams.team2} teamName="Equip ◼️" onClickPlayer={onClickPlayer} />
+                    </div>
+                </>
+            )}
+
         </div>
     );
 }
