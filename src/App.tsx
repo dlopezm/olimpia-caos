@@ -1,10 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import { Player, PLAYERS } from './data/players';
+import { Player } from './data/players';
 import TeamView from './TeamView';
 import { generateTeams } from './generate-teams';
+import { sanityClient } from './sanity-client';
 
 export const App = () => {
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+
+  useEffect(() => {
+    // Fetch player data from Sanity
+    const fetchPlayers = async () => {
+      try {
+        const query = '*[_type == "player"]';
+        const playersData = await sanityClient.fetch(query);
+        setAllPlayers(playersData);
+      } catch (error) {
+        console.error('Error fetching players:', error);
+      }
+    };
+
+    fetchPlayers();
+  }, []);
+
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [teams, setTeams] = useState<{ team1: Player[], team2: Player[] } | null>(null);
 
@@ -25,7 +43,7 @@ export const App = () => {
     <div className="App">
       <h3>Convocatòria</h3>
       <div className="player-list">
-        {PLAYERS.map((player, index) => (
+        {allPlayers.map((player, index) => (
           <div
             key={index}
             className={`player-item ${selectedPlayers.includes(player) ? 'selected' : ''}`}

@@ -81,6 +81,18 @@ export const generateTeams = (playerPool: Player[]): { team1: Player[], team2: P
         }
     }
 
+    // Sort teams by overall average attribute value
+    team1.sort((a, b) => {
+        const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
+        const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
+        return averageB - averageA;
+    });
+    team2.sort((a, b) => {
+        const averageA = (a.attack + a.defense + a.physical + a.vision) / 4;
+        const averageB = (b.attack + b.defense + b.physical + b.vision) / 4;
+        return averageB - averageA;
+    });
+
     return { team1, team2 };
 
 };
