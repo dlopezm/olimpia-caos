@@ -58,7 +58,7 @@
 
 .team:nth-child(2) .attribute-bar span {
   text-align: right;
-  margin-left: 5px; /* Reduce the margin to bring text closer to the bar */
+  margin-left: 5px; 
   margin-right: 0;
 }
 
