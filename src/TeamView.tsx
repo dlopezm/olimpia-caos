@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import { Player } from './data/players';
 import './TeamView.css';
 import { SelectedPlayer } from './SelectedPlayer';
+import { AttributeBar } from './AttributeBar';
 
 interface TeamProps {
   team: Player[];
   teamName: string;
 }
 
-const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
-    const averages = useMemo(() => {
+export const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
+  const averages = useMemo(() => {
     const totalPlayers = team.length;
-
     const sums = team.reduce(
       (acc, player) => {
         acc.attack += player.attack;
@@ -25,11 +25,11 @@ const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
     );
 
     return {
-      attack: (sums.attack / totalPlayers).toFixed(2),
-      defense: (sums.defense / totalPlayers).toFixed(2),
-      physical: (sums.physical / totalPlayers).toFixed(2),
-      vision: (sums.vision / totalPlayers).toFixed(2),
-      overall: (sums.overall / totalPlayers).toFixed(2),
+      attack: (sums.attack / totalPlayers),
+      defense: (sums.defense / totalPlayers),
+      physical: (sums.physical / totalPlayers),
+      vision: (sums.vision / totalPlayers),
+      overall: (sums.overall / totalPlayers),
     };
   }, [team]);
 
@@ -37,11 +37,11 @@ const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
     <div className="team">
       <h3>{teamName}</h3>
       <div className="team-averages">
-        <div>Mitjana: {averages.overall}</div>
-        <div>Atac: {averages.attack}</div>
-        <div>Defensa: {averages.defense}</div>
-        <div>Físic: {averages.physical}</div>
-        <div>Visió: {averages.vision}</div>
+        <AttributeBar label="Mitjana" value={averages.overall} />
+        <AttributeBar label="Atac" value={averages.attack} />
+        <AttributeBar label="Defensa" value={averages.defense} />
+        <AttributeBar label="Físic" value={averages.physical} />
+        <AttributeBar label="Visió" value={averages.vision} />
       </div>
       <div className="team-players-grid">
         {team.map((player, index) => (
@@ -51,5 +51,3 @@ const TeamView: React.FC<TeamProps> = ({ team, teamName }) => {
     </div>
   );
 };
-
-export default TeamView;

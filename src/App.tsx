@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { Player } from './data/players';
-import TeamView from './TeamView';
+import { TeamView } from './TeamView';
 import { generateTeams } from './generate-teams';
 import { sanityClient } from './sanity-client';
 
@@ -9,7 +9,6 @@ export const App = () => {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
-    // Fetch player data from Sanity
     const fetchPlayers = async () => {
       try {
         const query = '*[_type == "player"]';
