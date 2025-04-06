@@ -1,5 +1,5 @@
 import React from "react";
-import { Player } from "./data/players";
+import { Player } from "../../data/players";
 import { CombinedBar } from "./CombinedBar";
 
 type Props = {

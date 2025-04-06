@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { sanityClient } from "./sanity-client";
+import { useState, useEffect } from "react";
+import { Player } from "../../data/players";
+import { calculateTeamDifference } from "../../generate-teams";
+import { sanityClient } from "../../sanity-client";
 import { TeamSummary } from "./TeamSummary";
-import { calculateTeamDifference } from "./generate-teams";
-import "./HistoricalMatches.css";
-import { Player } from "./data/players";
 
 interface Match {
   _id: string;

@@ -1,9 +1,9 @@
 import { Tabs, TabList, TabPanel, Tab } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import { MatchPlanner } from "./MatchPlanner";
-import { HistoricalMatches } from "./HistoricalMatches";
-import { PlayerList } from "./PlayerList"; // ⬅️ Import the new component
+import { MatchPlanner } from "./match-planner/MatchPlanner";
+import { PlayerList } from "./player-list/PlayerList"; // ⬅️ Import the new component
 import "./App.css";
+import { HistoricalMatches } from "./historical-matches/HistoricalMatches";
 
 export const App = () => {
   return (

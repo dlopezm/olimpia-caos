@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { Player } from "./data/players";
-import { generateTeams, sortTeamsAndUpdateDifference } from "./generate-teams";
-import { sanityClient } from "./sanity-client";
+import { Player } from "../../data/players";
+import {
+  generateTeams,
+  sortTeamsAndUpdateDifference,
+} from "../../generate-teams";
+import { sanityClient } from "../../sanity-client";
 import { TeamView } from "./TeamView";
 import { TeamComparison } from "./TeamComparison";
 import "./MatchPlanner.css";

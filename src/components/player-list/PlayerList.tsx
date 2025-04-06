@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { sanityClient } from "./sanity-client";
-import { Player } from "./data/players";
+import { sanityClient } from "../../sanity-client";
+import { Player } from "../../data/players";
 
 const getBackgroundColor = (value: number): string => {
   if (value >= 8) return "#e0f2f1";

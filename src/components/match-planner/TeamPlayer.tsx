@@ -1,4 +1,4 @@
-import { Player } from "./data/players";
+import { Player } from "../../data/players";
 import "./TeamPlayer.css";
 
 interface SelectedPlayerProps {
