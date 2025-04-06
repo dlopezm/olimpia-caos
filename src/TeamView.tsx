@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
-import { Player } from './data/players';
-import './TeamView.css';
-import { TeamPlayer } from './SelectedPlayer';
-import { AttributeBar } from './AttributeBar';
+import React, { useMemo } from "react";
+import { Player } from "./data/players";
+import "./TeamView.css";
+import { TeamPlayer } from "./SelectedPlayer";
+import { AttributeBar } from "./AttributeBar";
 
 interface TeamProps {
   team: Player[];
@@ -10,7 +10,11 @@ interface TeamProps {
   onClickPlayer: (player: Player) => void;
 }
 
-export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer }) => {
+export const TeamView: React.FC<TeamProps> = ({
+  team,
+  teamName,
+  onClickPlayer,
+}) => {
   const averages = useMemo(() => {
     const totalPlayers = team.length;
     const sums = team.reduce(
@@ -22,16 +26,16 @@ export const TeamView: React.FC<TeamProps> = ({ team, teamName, onClickPlayer })
         acc.average += player.average;
         return acc;
       },
-      { attack: 0, defense: 0, physical: 0, vision: 0, average: 0 }
+      { attack: 0, defense: 0, physical: 0, vision: 0, average: 0 },
     );
 
     return {
-      attack: (sums.attack / totalPlayers),
-      defense: (sums.defense / totalPlayers),
-      physical: (sums.physical / totalPlayers),
-      vision: (sums.vision / totalPlayers),
-      technique: (sums.physical / totalPlayers),
-      average: (sums.average / totalPlayers),
+      attack: sums.attack / totalPlayers,
+      defense: sums.defense / totalPlayers,
+      physical: sums.physical / totalPlayers,
+      vision: sums.vision / totalPlayers,
+      technique: sums.physical / totalPlayers,
+      average: sums.average / totalPlayers,
     };
   }, [team]);
 

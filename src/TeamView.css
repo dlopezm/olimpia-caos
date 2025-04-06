@@ -58,7 +58,7 @@
 
 .team:nth-child(2) .attribute-bar span {
   text-align: right;
-  margin-left: 5px; 
+  margin-left: 5px;
   margin-right: 0;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .team:nth-child(2) .bar .value:after {
-  left: -30px; 
+  left: -30px;
   right: auto;
 }
 

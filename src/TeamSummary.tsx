@@ -1,4 +1,4 @@
-import './TeamSummary.css';
+import "./TeamSummary.css";
 
 interface Player {
   _id: string;
@@ -25,9 +25,11 @@ const calculateTeamAverages = (players: Player[]) => {
       physical: acc.physical + p.physical,
       vision: acc.vision + p.vision,
       technique: acc.technique + p.technique,
-      overall: acc.overall + ((p.attack + p.defense + p.physical + p.vision + p.technique) / 5),
+      overall:
+        acc.overall +
+        (p.attack + p.defense + p.physical + p.vision + p.technique) / 5,
     }),
-    { attack: 0, defense: 0, physical: 0, vision: 0, technique: 0, overall: 0 }
+    { attack: 0, defense: 0, physical: 0, vision: 0, technique: 0, overall: 0 },
   );
 
   const count = players.length;
@@ -53,8 +55,9 @@ export const TeamSummary = ({ players, label }: Props) => {
       {stats && (
         <div className="team-averages">
           <small>
-            <strong> MITJA {stats.overall}</strong> : ATK {stats.attack} | DEF {stats.defense} | FIS {stats.physical} | VIS {stats.vision} | TEC {stats.technique}
-            
+            <strong> MITJA {stats.overall}</strong> : ATK {stats.attack} | DEF{" "}
+            {stats.defense} | FIS {stats.physical} | VIS {stats.vision} | TEC{" "}
+            {stats.technique}
           </small>
         </div>
       )}
