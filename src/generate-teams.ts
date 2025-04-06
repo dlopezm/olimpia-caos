@@ -26,29 +26,16 @@ const calculateTotalsPerStat = (team: Player[]) => {
   };
 };
 
+/**
+* Positive = team1 has advantage
+*/
 export const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
   const totals1 = calculateTotalsPerStat(team1);
   const totals2 = calculateTotalsPerStat(team2);
 
-  const attackDiff = totals1.attack - totals2.attack;
-  const defenseDiff = totals1.defense - totals2.defense;
-  const physicalDiff = totals1.physical - totals2.physical;
-  const visionDiff = totals1.vision - totals2.vision;
-  const techniqueDiff = totals1.technique - totals2.technique;
-  const averageDiff = (totals1.average - totals2.average) * 2; // overall average is more important
-
-  // Euclidean distance
-  const totalDiff = Math.sqrt(
-    attackDiff * attackDiff +
-    defenseDiff * defenseDiff +
-    physicalDiff * physicalDiff +
-    visionDiff * visionDiff +
-    techniqueDiff * techniqueDiff +
-    averageDiff * averageDiff,
-  );
-
-  return totalDiff;
+  return totals1.average - totals2.average;
 };
+
 const sortPlayers = (a: Player, b: Player) => {
   if (a.average !== b.average) {
     return b.average - a.average;
