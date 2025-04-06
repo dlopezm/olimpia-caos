@@ -133,8 +133,9 @@ export const MatchPlanner = () => {
         {allPlayers.map((player, index) => (
           <div
             key={index}
-            className={`player-item ${selectedPlayers.includes(player) ? "selected" : ""
-              }`}
+            className={`player-item ${
+              selectedPlayers.includes(player) ? "selected" : ""
+            }`}
             onClick={() => handlePlayerSelect(player)}
           >
             {player.name}

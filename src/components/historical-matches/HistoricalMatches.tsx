@@ -3,6 +3,7 @@ import { Player } from "../../data/players";
 import { calculateTeamDifference } from "../../generate-teams";
 import { sanityClient } from "../../sanity-client";
 import { TeamSummary } from "./TeamSummary";
+import "./HistoricalMatches.css";
 
 interface Match {
   _id: string;
@@ -31,31 +32,18 @@ export const HistoricalMatches = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       const query = `*[_type == "match"] | order(date desc){
-            _id,
-            date,
-            result,
-            localTeam[]->{
-                _id,
-                name,
-                attack,
-                defense,
-                physical,
-                vision,
-                technique,
-                "average": (attack + defense + physical + vision + technique) / 5
-            },
-            awayTeam[]->{
-                _id,
-                name,
-                attack,
-                defense,
-                physical,
-                vision,
-                technique,
-                "average": (attack + defense + physical + vision + technique) / 5
-            }
-            }`;
-
+        _id,
+        date,
+        result,
+        localTeam[]->{
+            _id, name, attack, defense, physical, vision, technique,
+            "average": (attack + defense + physical + vision + technique) / 5
+        },
+        awayTeam[]->{
+            _id, name, attack, defense, physical, vision, technique,
+            "average": (attack + defense + physical + vision + technique) / 5
+        }
+      }`;
       const data = await sanityClient.fetch(query);
       setMatches(data);
     };
@@ -72,21 +60,33 @@ export const HistoricalMatches = () => {
         return (
           <div key={match._id} className="match-card">
             <div className="match-header">
-              <strong>{new Date(match.date).toLocaleDateString()}</strong> –{" "}
-              {resultToTitle(match.result)}
+              <span className="match-date">
+                {new Date(match.date).toLocaleDateString()}
+              </span>
+              <span className="match-result">
+                {resultToTitle(match.result)}
+              </span>
+            </div>
+            <div className="match-diff">
+              {diff === 0 ? (
+                "Igualtat màxima"
+              ) : (
+                <>
+                  Diferència de {Math.abs(diff).toFixed(2)} punts de crack a
+                  favor de {diff > 0 ? "◻️" : "◼️"}
+                </>
+              )}
             </div>
 
-            {diff === 0 ? (
-              <div className="match-diff">Igualtat màxima</div>
-            ) : (
-              <div className="match-diff">
-                Diferència de {Math.abs(diff).toFixed(2)} punts de crack a favor
-                de {diff > 0 ? "◻️" : "◼️"}
+            <div className="match-teams">
+              <div className="team-column light-team">
+                <TeamSummary players={match.localTeam} label="◻️" />
               </div>
-            )}
 
-            <TeamSummary players={match.localTeam} label="◻️" />
-            <TeamSummary players={match.awayTeam} label="◼️" />
+              <div className="team-column dark-team">
+                <TeamSummary players={match.awayTeam} label="◼️" />
+              </div>
+            </div>
           </div>
         );
       })}

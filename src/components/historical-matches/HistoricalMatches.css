@@ -1,35 +1,64 @@
 .historical-matches {
   padding: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
 .match-card {
   border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  background-color: #f8f9fa;
+  border-radius: 10px;
+  background: #fff;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .match-header {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.match-date {
+  color: #666;
+}
+
+.match-result {
+  color: #2235dd;
 }
 
 .match-teams {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.team-column {
+  flex: 1;
+}
+
+.light-team {
+  background-color: #f6ffcd;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.dark-team {
+  background-color: #2e2e2e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #fff;
+}
+
+.match-diff {
+  text-align: center;
   font-size: 14px;
-  line-height: 1.6;
-}
-
-.team-label {
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-.team-averages {
-  font-size: 12px;
-  color: #555;
-  margin: 4px 0 12px 20px;
+  font-weight: 500;
+  margin-top: 10px;
+  color: #444;
 }
