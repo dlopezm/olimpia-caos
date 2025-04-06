@@ -9,6 +9,15 @@ import { TeamView } from "./TeamView";
 import { TeamComparison } from "./TeamComparison";
 import "./MatchPlanner.css";
 
+function getParamIds(param: string | null): string[] {
+  return (
+    param
+      ?.split(",")
+      .map((id) => id.trim().toLowerCase())
+      .filter(Boolean) || []
+  );
+}
+
 export const MatchPlanner = () => {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
@@ -17,6 +26,22 @@ export const MatchPlanner = () => {
     team2: Player[];
     difference: number;
   } | null>(null);
+
+  // Update the URL when teams change
+  useEffect(() => {
+    if (!teams) return;
+
+    const shortId = (player: Player) => player._id.slice(0, 5);
+    const lightIds = teams.team1.map(shortId);
+    const darkIds = teams.team2.map(shortId);
+
+    const params = new URLSearchParams();
+    if (lightIds.length > 0) params.set("light", lightIds.join(","));
+    if (darkIds.length > 0) params.set("dark", darkIds.join(","));
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({}, "", newUrl);
+  }, [teams]);
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -31,11 +56,31 @@ export const MatchPlanner = () => {
           technique,
           "average": (attack + defense + physical + vision + technique) / 5
         }`;
-        const playersData = await sanityClient.fetch(query);
+        const playersData: Player[] = await sanityClient.fetch(query);
         playersData.sort((a: Player, b: Player) =>
           a.name.localeCompare(b.name),
         );
         setAllPlayers(playersData);
+
+        // Get params from URL
+        const url = new URL(window.location.href);
+        const lightIds = getParamIds(url.searchParams.get("light"));
+        const darkIds = getParamIds(url.searchParams.get("dark"));
+
+        // Match IDs using the first 5 characters
+        const matchByPrefix = (prefixes: string[]) =>
+          playersData.filter((player) =>
+            prefixes.some((prefix) => player._id.startsWith(prefix)),
+          );
+
+        const lightTeam = matchByPrefix(lightIds);
+        const darkTeam = matchByPrefix(darkIds);
+        const allSelected = [...lightTeam, ...darkTeam];
+
+        if (allSelected.length > 0) {
+          setSelectedPlayers(allSelected);
+          setTeams(sortTeamsAndUpdateDifference(lightTeam, darkTeam));
+        }
       } catch (error) {
         console.error("Error fetching players:", error);
       }
@@ -88,9 +133,8 @@ export const MatchPlanner = () => {
         {allPlayers.map((player, index) => (
           <div
             key={index}
-            className={`player-item ${
-              selectedPlayers.includes(player) ? "selected" : ""
-            }`}
+            className={`player-item ${selectedPlayers.includes(player) ? "selected" : ""
+              }`}
             onClick={() => handlePlayerSelect(player)}
           >
             {player.name}
