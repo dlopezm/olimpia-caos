@@ -1,0 +1,28 @@
+.player-list-page {
+  padding: 20px;
+}
+
+.player-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.player-table th,
+.player-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.player-table th {
+  background-color: #f4f4f4;
+}
+
+.player-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.player-table tr:hover {
+  background-color: #f1f1f1;
+}

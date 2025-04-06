@@ -2,7 +2,8 @@ import { Tabs, TabList, TabPanel, Tab } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { MatchPlanner } from './MatchPlanner';
 import { HistoricalMatches } from './HistoricalMatches';
-import './App.css'; // Import your custom styles
+import { PlayerList } from './PlayerList'; // ⬅️ Import the new component
+import './App.css';
 
 export const App = () => {
   return (
@@ -11,6 +12,7 @@ export const App = () => {
         <TabList>
           <Tab>Creador d'equips</Tab>
           <Tab>Historial de partits</Tab>
+          <Tab>Llista de jugadors</Tab>
         </TabList>
 
         <TabPanel>
@@ -19,6 +21,10 @@ export const App = () => {
 
         <TabPanel>
           <HistoricalMatches />
+        </TabPanel>
+
+        <TabPanel>
+          <PlayerList />
         </TabPanel>
       </Tabs>
     </div>

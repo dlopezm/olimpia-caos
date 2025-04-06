@@ -23,7 +23,6 @@ html, body {
   height: 100%;
 }
 
-/* Tab List (top nav) */
 .react-tabs__tab-list {
   display: flex;
   background: white;
@@ -31,28 +30,33 @@ html, body {
   z-index: 1;
 }
 
-/* Individual tab */
 .react-tabs__tab {
   flex: 1;
   text-align: center;
   padding: 10px;
   cursor: pointer;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Selected tab style */
+.react-tabs__tab:hover {
+  background-color: #f5f8ff;
+}
+
 .react-tabs__tab--selected {
-  border-bottom: 2px solid #4690fd;
+  border-bottom: 3px solid #4690fd;
   color: #4690fd;
+  font-weight: bold;
+  background-color: #eaf2ff;
 }
 
-/* Panel (tab content) */
 .react-tabs__tab-panel {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
-/* Optional utility if you want additional scroll area or shared content class */
 .tab-content {
   flex: 1;
   overflow-y: auto;
