@@ -3,8 +3,8 @@
   text-align: center;
 }
 
-.player-list,
-.selected-list {
+/* Player list */
+.player-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -12,8 +12,7 @@
   margin-top: 20px;
 }
 
-.player-item,
-.selected-item {
+.player-item {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -27,34 +26,44 @@
   border-color: #badbcc;
 }
 
-.selected-item {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #f8f9fa;
-  width: 150px;
-}
-
-.player-name {
-  font-weight: bold;
-  margin-bottom: 5px;
-  word-wrap: break-word;
-}
-
-.player-attributes {
+/* Generate button */
+.generate-button-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .generate-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #2235dd;
+  color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+.generate-button:hover:enabled {
+  background-color: #4690fd;
+}
+
+.generate-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Difference message */
+.difference-message {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Teams layout */
 .teams-container {
   display: flex;
   justify-content: space-between;
@@ -85,39 +94,4 @@
   padding: 10px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.generate-button-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.generate-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #2235dd;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.generate-button:hover:enabled {
-  background-color: #4690fd;
-}
-
-.generate-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.difference-message {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
 }
