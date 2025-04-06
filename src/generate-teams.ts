@@ -27,8 +27,8 @@ const calculateTotalsPerStat = (team: Player[]) => {
 };
 
 /**
-* Positive = team1 has advantage
-*/
+ * Positive = team1 has advantage
+ */
 export const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
   const totals1 = calculateTotalsPerStat(team1);
   const totals2 = calculateTotalsPerStat(team2);

@@ -11,7 +11,7 @@ export const MatchPlanner = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const query = `*[_type == "player"]{
+        const query = `*[_type == "player" && !isGuest]{
                     _id,
                     name,
                     attack,

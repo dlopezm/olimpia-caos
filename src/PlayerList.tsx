@@ -31,7 +31,7 @@ export const PlayerList = () => {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const query = `*[_type == "player"]{
+      const query = `*[_type == "player" && !isGuest]{
         _id,
         name,
         attack,
