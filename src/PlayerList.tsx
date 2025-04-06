@@ -1,26 +1,39 @@
 import { useEffect, useState } from "react";
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, ColumnDef, SortingState } from "@tanstack/react-table";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { sanityClient } from "./sanity-client";
-import "./PlayerList.css";
+import { Player } from "./data/players";
 
-interface Player {
-  _id: string;
-  name: string;
-  attack: number;
-  defense: number;
-  physical: number;
-  vision: number;
-  technique: number;
-  average: number;
-}
+const getBackgroundColor = (value: number): string => {
+    if (value >= 8) return "#e0f2f1";
+    if (value >= 6) return "#e8f5e9";
+    if (value >= 5) return "#fffde7";
+    if (value >= 4) return "#fff3e0";
+    return "#ffebee";
+};
+
+const renderStatCell = (value: number, decimals = 1) => (
+    <div
+        style={{
+            backgroundColor: getBackgroundColor(value),
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}
+    >
+        {value.toFixed(decimals)}
+    </div>
+);
+
+
 
 export const PlayerList = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+    const [players, setPlayers] = useState<Player[]>([]);
 
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      const query = `*[_type == "player"]{
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            const query = `*[_type == "player"]{
         _id,
         name,
         attack,
@@ -30,64 +43,62 @@ export const PlayerList = () => {
         technique,
         "average": (attack + defense + physical + vision + technique) / 5
       }`;
-      const data = await sanityClient.fetch(query);
-      setPlayers(data);
-    };
+            const data = await sanityClient.fetch(query);
+            setPlayers(data);
+        };
 
-    fetchPlayers();
-  }, []);
+        fetchPlayers();
+    }, []);
 
-  const columns: ColumnDef<Player>[] = [
-    { accessorKey: "name", header: "Nom" },
-    { accessorKey: "attack", header: "ATK" },
-    { accessorKey: "defense", header: "DEF" },
-    { accessorKey: "physical", header: "FIS" },
-    { accessorKey: "vision", header: "VIS" },
-    { accessorKey: "technique", header: "TEC" },
-    {
-      accessorKey: "average",
-      header: "Mitjana",
-      cell: (info) => Number(info.getValue()).toFixed(2),
-    },
-  ];
+    const columns: GridColDef[] = [
+        { field: "name", headerName: "Nom", width: 200 },
+        {
+            field: "attack", headerName: "ATK", type: "number", width: 90, renderCell: (params) => renderStatCell(params.value)
+        },
+        {
+            field: "defense", headerName: "DEF", type: "number", width: 90, renderCell: (params) => renderStatCell(params.value)
+        },
+        {
+            field: "physical", headerName: "FIS", type: "number", width: 90, renderCell: (params) => renderStatCell(params.value)
+        },
+        {
+            field: "vision", headerName: "VIS", type: "number", width: 90, renderCell: (params) => renderStatCell(params.value)
+        },
+        {
+            field: "technique", headerName: "TEC", type: "number", width: 90, renderCell: (params) => renderStatCell(params.value)
+        },
+        {
+            field: "average",
+            headerName: "Mitjana",
+            type: "number",
+            width: 100,
+            renderCell: (params) => renderStatCell(params.value)
+        }
+    ];
 
-  const table = useReactTable({
-    data: players,
-    columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    debugTable: false,
-  });
-
-  return (
-    <div className="player-list-page">
-      <h3>Llista de jugadors</h3>
-      <table className="player-table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} onClick={header.column.getToggleSortingHandler()}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                  {header.column.getIsSorted() === "asc" && " ▲"}
-                  {header.column.getIsSorted() === "desc" && " ▼"}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <div style={{ height: "100%", width: "100%", padding: 20 }}>
+            <DataGrid
+                rows={players}
+                columns={columns}
+                getRowId={(row) => row._id}
+                initialState={{
+                    sorting: {
+                        sortModel: [{ field: "average", sort: "desc" }],
+                    },
+                }}
+                disableColumnFilter
+                disableDensitySelector
+                disableRowSelectionOnClick
+                autoHeight={false}
+                sx={{
+                    height: "calc(100% - 50px)",
+                    "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: "#f4f4f4",
+                        fontWeight: "bold",
+                    },
+                }}
+            />
+        </div>
+    );
 };
