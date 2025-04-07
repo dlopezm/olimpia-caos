@@ -68,7 +68,7 @@ export const HistoricalMatches = () => {
               </span>
             </div>
             <div className="match-diff">
-              {diff === 0 ? (
+              {Math.abs(diff).toFixed(2) === "0.00" ? (
                 "Igualtat màxima"
               ) : (
                 <>

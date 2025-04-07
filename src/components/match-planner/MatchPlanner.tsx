@@ -156,7 +156,7 @@ export const MatchPlanner = () => {
       {teams && (
         <>
           <div className="difference-message">
-            {teams.difference === 0 ? (
+            {Math.abs(teams.difference).toFixed(2) === "0.00" ? (
               <div>Igualtat màxima al terreny de joc!</div>
             ) : (
               <div>
