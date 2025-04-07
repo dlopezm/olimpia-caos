@@ -1,3 +1,5 @@
+@import "/src/theme.css";
+
 html,
 body {
   margin: 0;
@@ -26,8 +28,8 @@ body {
 
 .react-tabs__tab-list {
   display: flex;
-  background: white;
-  border-bottom: 1px solid #ccc;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-gray);
   z-index: 1;
 }
 
@@ -44,14 +46,14 @@ body {
 }
 
 .react-tabs__tab:hover {
-  background-color: #f5f8ff;
+  background-color: var(--color-bar-bg);
 }
 
 .react-tabs__tab--selected {
-  border-bottom: 3px solid #4690fd;
-  color: #4690fd;
+  border-bottom: 3px solid var(--color-primary-alt);
+  color: var(--color-primary-alt);
   font-weight: bold;
-  background-color: #eaf2ff;
+  background-color: var(--color-success-bg);
 }
 
 .react-tabs__tab-panel {

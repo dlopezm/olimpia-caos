@@ -1,9 +1,10 @@
+@import "/src/theme.css";
+
 .App {
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
-/* Player list */
 .player-list {
   display: flex;
   flex-wrap: wrap;
@@ -14,7 +15,7 @@
 
 .player-item {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-gray);
   border-radius: 5px;
   cursor: pointer;
   width: 150px;
@@ -22,11 +23,10 @@
 }
 
 .player-item.selected {
-  background-color: #d1e7dd;
-  border-color: #badbcc;
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
 }
 
-/* Generate button */
 .generate-button-wrapper {
   display: flex;
   justify-content: center;
@@ -37,7 +37,7 @@
   padding: 12px 24px;
   font-size: 18px;
   font-weight: bold;
-  background-color: #2235dd;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -46,24 +46,22 @@
 }
 
 .generate-button:hover:enabled {
-  background-color: #4690fd;
+  background-color: var(--color-primary-alt);
 }
 
 .generate-button:disabled {
-  background-color: #ccc;
+  background-color: var(--color-gray);
   cursor: not-allowed;
 }
 
-/* Difference message */
 .difference-message {
   margin-top: 20px;
   text-align: center;
   font-size: 18px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text);
 }
 
-/* Teams layout */
 .teams-container {
   display: flex;
   justify-content: space-between;
@@ -88,8 +86,8 @@
 }
 
 .team-item {
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray);
   border-radius: 5px;
   padding: 10px;
   width: 100%;

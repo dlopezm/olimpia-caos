@@ -1,3 +1,5 @@
+@import "/src/theme.css";
+
 .historical-matches {
   padding: 20px;
   max-width: 900px;
@@ -5,12 +7,12 @@
 }
 
 .match-card {
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-gray);
   border-radius: 10px;
-  background: #fff;
+  background: var(--color-white);
   padding: 16px 20px;
   margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px var(--color-shadow);
 }
 
 .match-header {
@@ -19,16 +21,16 @@
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 12px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-bar-bg);
   padding-bottom: 6px;
 }
 
 .match-date {
-  color: #666;
+  color: var(--color-gray-dark);
 }
 
 .match-result {
-  color: #2235dd;
+  color: var(--color-primary);
 }
 
 .match-teams {
@@ -43,16 +45,16 @@
 }
 
 .light-team {
-  background-color: #f6ffcd;
+  background: var(--gradient-light);
   border-radius: 6px;
   padding: 8px 12px;
 }
 
 .dark-team {
-  background-color: #2e2e2e;
+  background: var(--gradient-dark);
   border-radius: 6px;
   padding: 8px 12px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .match-diff {
@@ -60,7 +62,7 @@
   font-size: 14px;
   font-weight: 500;
   margin-top: 10px;
-  color: #444;
+  color: var(--color-border-dark);
 }
 
 .match-result-badge {
@@ -73,19 +75,19 @@
 }
 
 .match-result-badge.white {
-  background-color: #f6ffcd;
-  color: #1a4d00;
-  border: 1px solid #b4e08f;
+  background-color: var(--color-team-light);
+  color: var(--color-win-light-text);
+  border: 1px solid var(--color-team-light);
 }
 
 .match-result-badge.dark {
-  background-color: #2e2e2e;
-  color: #fff;
-  border: 1px solid #444;
+  background-color: var(--color-team-dark);
+  color: var(--color-white);
+  border: 1px solid var(--color-border-dark);
 }
 
 .match-result-badge.draw {
-  background-color: #f7f7f7;
-  color: #555;
-  border: 1px solid #ccc;
+  background-color: var(--color-draw);
+  color: var(--color-text);
+  border: 1px solid var(--color-gray);
 }

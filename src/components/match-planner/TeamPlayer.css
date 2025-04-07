@@ -1,14 +1,16 @@
+@import "/src/theme.css";
+
 .player-card {
-  border: 2px solid #aaa;
+  border: 2px solid var(--color-gray);
   border-radius: 12px;
   padding: 16px;
   width: 160px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px var(--color-shadow);
   text-align: center;
   font-family: "Arial", sans-serif;
   cursor: pointer;
   transition: transform 0.2s ease;
-  color: #000;
+  color: var(--color-black);
 }
 
 .player-card:hover {
@@ -16,12 +18,12 @@
 }
 
 .team-light {
-  background: linear-gradient(to bottom, #f9f9f9, #e8f1d4);
+  background: var(--gradient-light);
 }
 
 .team-dark {
-  background: linear-gradient(to bottom, #3c3f46, #222);
-  color: white;
+  background: var(--gradient-dark);
+  color: var(--color-white);
 }
 
 .player-card-header {

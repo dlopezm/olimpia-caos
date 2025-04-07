@@ -1,0 +1,49 @@
+:root {
+  /* Base colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-light: #eeeeee;
+  --color-gray: #cccccc;
+  --color-gray-dark: #666666;
+
+  /* Text */
+  --color-text: #333333;
+
+  /* Primary (football green) */
+  --color-primary: #2e7d32;
+  --color-primary-alt: #4caf50;
+
+  /* Selection / highlights */
+  --color-success-bg: #e6f4ea;
+  --color-success-border: #c3e6cb;
+
+  /* Team identities */
+  --color-team-light: #fcffcd;
+  --color-team-dark: #3f3f3f;
+
+  /* Result indicators */
+  --color-win-light: #e6f7d9;
+  --color-win-light-text: #1a4d00;
+  --color-draw: #f7f7f7;
+
+  /* Borders and dividers */
+  --color-border: var(--color-gray);
+  --color-border-dark: #444444;
+  --color-bar-divider: #ff4d4d;
+
+  /* Stat bar */
+  --color-bar-bg: var(--color-gray-light);
+  --color-bar-light: var(--color-team-light);
+  --color-bar-dark: #484a52;
+
+  /* Gradients */
+  --gradient-light: linear-gradient(
+    to bottom,
+    var(--color-white),
+    var(--color-team-light)
+  );
+  --gradient-dark: linear-gradient(to bottom, #4a4f5a, var(--color-team-dark));
+
+  /* Shadows */
+  --color-shadow: rgba(0, 0, 0, 0.1);
+}

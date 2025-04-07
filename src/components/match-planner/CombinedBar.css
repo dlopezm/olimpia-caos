@@ -1,3 +1,5 @@
+@import "/src/theme.css";
+
 .combined-bar {
   margin-bottom: 16px;
 }
@@ -12,7 +14,7 @@
   width: 100%;
   height: 24px;
   position: relative;
-  background: #eee;
+  background: var(--color-bar-bg);
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -21,7 +23,6 @@
   font-size: 1rem;
 }
 
-/* Fill bars */
 .combined-bar .fill {
   height: 100%;
   position: absolute;
@@ -32,16 +33,15 @@
 }
 
 .combined-bar .fill.team1 {
-  background-color: #f6ffcd;
+  background-color: var(--color-bar-light);
   left: 0;
 }
 
 .combined-bar .fill.team2 {
-  background-color: #484a52;
+  background-color: var(--color-bar-dark);
   right: 0;
 }
 
-/* Stat values */
 .combined-bar .stat-value {
   z-index: 1;
   font-size: 1rem;
@@ -50,14 +50,13 @@
 }
 
 .combined-bar .stat-value.left {
-  color: #000;
+  color: var(--color-black);
 }
 
 .combined-bar .stat-value.right {
-  color: #fff;
+  color: var(--color-white);
 }
 
-/* 50% marker */
 .combined-bar .bar::after {
   content: "";
   position: absolute;
@@ -65,6 +64,6 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  border-left: 2px dotted #ff0000;
+  border-left: 2px dotted var(--color-bar-divider);
   z-index: 2;
 }
