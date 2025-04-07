@@ -62,3 +62,30 @@
   margin-top: 10px;
   color: #444;
 }
+
+.match-result-badge {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.match-result-badge.white {
+  background-color: #f6ffcd;
+  color: #1a4d00;
+  border: 1px solid #b4e08f;
+}
+
+.match-result-badge.dark {
+  background-color: #2e2e2e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.match-result-badge.draw {
+  background-color: #f7f7f7;
+  color: #555;
+  border: 1px solid #ccc;
+}

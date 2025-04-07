@@ -63,7 +63,7 @@ export const HistoricalMatches = () => {
               <span className="match-date">
                 {new Date(match.date).toLocaleDateString()}
               </span>
-              <span className="match-result">
+              <span className={`match-result-badge ${match.result}`}>
                 {resultToTitle(match.result)}
               </span>
             </div>
