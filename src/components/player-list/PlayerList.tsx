@@ -49,7 +49,14 @@ export const PlayerList = () => {
   }, []);
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Nom", width: 200 },
+    {
+      field: "name",
+      headerName: "Nom",
+      width: 200,
+      renderCell: (params) => (
+        <span style={{ color: "var(--color-text)" }}>{params.value}</span>
+      ),
+    },
     {
       field: "attack",
       headerName: "ATK",
