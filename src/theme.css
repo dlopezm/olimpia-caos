@@ -35,6 +35,7 @@
   --color-bar-bg: var(--color-gray-light);
   --color-bar-light: var(--color-team-light);
   --color-bar-dark: #484a52;
+  --color-team-dark-text: var(--color-white);
 
   /* Gradients */
   --gradient-light: linear-gradient(
@@ -46,4 +47,40 @@
 
   /* Shadows */
   --color-shadow: rgba(0, 0, 0, 0.1);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Base theme overrides */
+    --color-white: #121212;
+    --color-text: #e0e0e0;
+    --color-gray: #444;
+    --color-gray-light: #2a2a2a;
+    --color-gray-dark: #aaa;
+
+    --color-border: #444;
+    --color-border-dark: #666;
+
+    --color-success-bg: #1e442b;
+    --color-success-border: #3e995e;
+
+    --color-primary: #4caf50;
+    --color-primary-alt: #66bb6a;
+
+    --color-shadow: rgba(0, 0, 0, 0.4);
+
+    /* ❗ Team identity colors */
+    --color-team-light: #f6ffcd;
+    --color-team-dark: #2e2e2e;
+    --color-bar-light: var(--color-team-light);
+    --color-bar-dark: #484a52;
+    --color-team-dark-text: var(--color-text);
+
+    /* Gradients maintain identity */
+    --gradient-light: linear-gradient(to bottom, #333, var(--color-team-light));
+    --gradient-dark: linear-gradient(
+      to bottom,
+      #4a4f5a,
+      var(--color-team-dark)
+    );
+  }
 }

@@ -54,7 +54,7 @@
   background: var(--gradient-dark);
   border-radius: 6px;
   padding: 8px 12px;
-  color: var(--color-white);
+  color: var(--color-team-dark-text);
 }
 
 .match-diff {

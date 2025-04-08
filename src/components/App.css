@@ -28,8 +28,8 @@ body {
 
 .react-tabs__tab-list {
   display: flex;
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-gray);
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
   z-index: 1;
 }
 
@@ -39,21 +39,23 @@ body {
   padding: 10px;
   cursor: pointer;
   font-weight: 500;
+  background-color: var(--color-white);
+  color: var(--color-text);
   border-bottom: 2px solid transparent;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
 }
 
-.react-tabs__tab:hover {
-  background-color: var(--color-bar-bg);
+.react-tabs__tab--selected {
+  background-color: var(--color-success-bg);
+  border-bottom: 3px solid var(--color-primary-alt);
+  color: var(--color-primary);
+  font-weight: bold;
 }
 
-.react-tabs__tab--selected {
-  border-bottom: 3px solid var(--color-primary-alt);
-  color: var(--color-primary-alt);
-  font-weight: bold;
-  background-color: var(--color-success-bg);
+.react-tabs__tab:hover {
+  background-color: var(--color-bar-bg);
 }
 
 .react-tabs__tab-panel {

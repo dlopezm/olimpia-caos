@@ -23,7 +23,7 @@
 
 .team-dark {
   background: var(--gradient-dark);
-  color: var(--color-white);
+  color: var(--color-team-dark-text);
 }
 
 .player-card-header {
