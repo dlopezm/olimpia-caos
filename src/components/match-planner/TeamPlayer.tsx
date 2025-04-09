@@ -21,23 +21,25 @@ export const TeamPlayer = ({
         <div className="player-card-rating">{player.average.toFixed(2)}</div>
         <div className="player-card-name">{player.name}</div>
       </div>
-      <div className="player-card-stats">
-        <div>
-          ATK <span>{player.attack.toFixed(2)}</span>
+      {!player.isGuest && (
+        <div className="player-card-stats">
+          <div>
+            ATK <span>{player.attack.toFixed(2)}</span>
+          </div>
+          <div>
+            DEF <span>{player.defense.toFixed(2)}</span>
+          </div>
+          <div>
+            FIS <span>{player.physical.toFixed(2)}</span>
+          </div>
+          <div>
+            VIS <span>{player.vision.toFixed(2)}</span>
+          </div>
+          <div>
+            TEC <span>{player.technique.toFixed(2)}</span>
+          </div>
         </div>
-        <div>
-          DEF <span>{player.defense.toFixed(2)}</span>
-        </div>
-        <div>
-          FIS <span>{player.physical.toFixed(2)}</span>
-        </div>
-        <div>
-          VIS <span>{player.vision.toFixed(2)}</span>
-        </div>
-        <div>
-          TEC <span>{player.technique.toFixed(2)}</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

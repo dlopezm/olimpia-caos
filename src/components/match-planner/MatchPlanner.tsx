@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Player } from "../../data/players";
 import {
   generateTeams,
@@ -8,6 +8,7 @@ import { sanityClient } from "../../sanity-client";
 import { TeamView } from "./TeamView";
 import { TeamComparison } from "./TeamComparison";
 import "./MatchPlanner.css";
+import { allPlayersQuery } from "../../data-utils";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -46,17 +47,9 @@ export const MatchPlanner = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const query = `*[_type == "player" && !isGuest]{
-          _id,
-          name,
-          attack,
-          defense,
-          physical,
-          vision,
-          technique,
-          "average": (attack + defense + physical + vision + technique) / 5
-        }`;
-        const playersData: Player[] = await sanityClient.fetch(query);
+        const playersData: Player[] = await sanityClient.fetch(
+          allPlayersQuery(true),
+        );
         playersData.sort((a: Player, b: Player) =>
           a.name.localeCompare(b.name),
         );
@@ -88,6 +81,11 @@ export const MatchPlanner = () => {
 
     fetchPlayers();
   }, []);
+
+  const nonGuestPlayers = useMemo(
+    () => allPlayers.filter((player) => !player.isGuest),
+    [allPlayers],
+  );
 
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayers((prev) =>
@@ -130,7 +128,7 @@ export const MatchPlanner = () => {
     <div className="match-planner">
       <h3>Convocatòria</h3>
       <div className="player-list">
-        {allPlayers.map((player, index) => (
+        {nonGuestPlayers.map((player, index) => (
           <div
             key={index}
             className={`player-item ${

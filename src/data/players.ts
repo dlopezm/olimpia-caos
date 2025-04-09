@@ -7,4 +7,5 @@ export interface Player {
   vision: number;
   technique: number;
   average: number;
+  isGuest: boolean;
 }

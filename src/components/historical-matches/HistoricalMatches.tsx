@@ -51,6 +51,14 @@ export const HistoricalMatches = () => {
     fetchMatches();
   }, []);
 
+  const shortId = (id: string) => id.slice(0, 5);
+
+  const handleLoadMatch = (light: Player[], dark: Player[]) => {
+    const lightIds = light.map((p) => shortId(p._id)).join(",");
+    const darkIds = dark.map((p) => shortId(p._id)).join(",");
+    window.location.href = `/?light=${lightIds}&dark=${darkIds}#equipador`;
+  };
+
   return (
     <div className="historical-matches">
       <h3>Historial de Partits</h3>
@@ -60,9 +68,19 @@ export const HistoricalMatches = () => {
         return (
           <div key={match._id} className="match-card">
             <div className="match-header">
-              <span className="match-date">
-                {new Date(match.date).toLocaleDateString()}
-              </span>
+              <div className="match-header-left">
+                <span className="match-date">
+                  {new Date(match.date).toLocaleDateString()}
+                </span>
+                <button
+                  className="load-match-button"
+                  onClick={() =>
+                    handleLoadMatch(match.localTeam, match.awayTeam)
+                  }
+                >
+                  Carrega
+                </button>
+              </div>
               <span className={`match-result-badge ${match.result}`}>
                 {resultToTitle(match.result)}
               </span>

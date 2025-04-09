@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { sanityClient } from "../../sanity-client";
 import { Player } from "../../data/players";
+import { allPlayersQuery } from "../../data-utils";
 
 const getBackgroundColor = (value: number): string => {
   if (value >= 4.25) return "#e0f2f1";
@@ -31,17 +32,7 @@ export const PlayerList = () => {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const query = `*[_type == "player" && !isGuest]{
-        _id,
-        name,
-        attack,
-        defense,
-        physical,
-        vision,
-        technique,
-        "average": (attack + defense + physical + vision + technique) / 5
-      }`;
-      const data = await sanityClient.fetch(query);
+      const data = await sanityClient.fetch(allPlayersQuery(false));
       setPlayers(data);
     };
 

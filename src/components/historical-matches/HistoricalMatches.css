@@ -18,6 +18,7 @@
 .match-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -25,8 +26,30 @@
   padding-bottom: 6px;
 }
 
+.match-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .match-date {
   color: var(--color-gray-dark);
+}
+
+.load-match-button {
+  padding: 4px 8px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-match-button:hover {
+  background-color: var(--color-primary-alt);
 }
 
 .match-result {
