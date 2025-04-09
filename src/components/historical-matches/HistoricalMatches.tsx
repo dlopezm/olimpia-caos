@@ -56,7 +56,8 @@ export const HistoricalMatches = () => {
   const handleLoadMatch = (light: Player[], dark: Player[]) => {
     const lightIds = light.map((p) => shortId(p._id)).join(",");
     const darkIds = dark.map((p) => shortId(p._id)).join(",");
-    window.location.href = `/?light=${lightIds}&dark=${darkIds}#equipador`;
+    const base = window.location.pathname.replace(/[^/]+$/, "");
+    window.location.href = `${base}?light=${lightIds}&dark=${darkIds}#equipador`;
   };
 
   return (
