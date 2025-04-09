@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { FaMagnifyingGlassChart } from "react-icons/fa6";
+
 import { Player } from "../../data/players";
 import { calculateTeamDifference } from "../../generate-teams";
 import { sanityClient } from "../../sanity-client";
@@ -79,7 +81,7 @@ export const HistoricalMatches = () => {
                     handleLoadMatch(match.localTeam, match.awayTeam)
                   }
                 >
-                  Carrega
+                  <FaMagnifyingGlassChart />
                 </button>
               </div>
               <span className={`match-result-badge ${match.result}`}>

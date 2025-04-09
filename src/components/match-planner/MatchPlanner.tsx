@@ -100,7 +100,12 @@ export const MatchPlanner = () => {
     };
 
     const currentUrl = new URL(window.location.href);
-    const output = [`\`\`\`${formatTeam(teams.team1, "▫️")}`, `${formatTeam(teams.team2, "◾️")}`, currentUrl, `\`\`\``].join("\n");
+    const output = [
+      `\`\`\`${formatTeam(teams.team1, "▫️")}`,
+      `${formatTeam(teams.team2, "◾️")}`,
+      currentUrl,
+      `\`\`\``,
+    ].join("\n");
 
     console.log(output);
   }, [teams]);
@@ -149,8 +154,9 @@ export const MatchPlanner = () => {
         {nonGuestPlayers.map((player, index) => (
           <div
             key={index}
-            className={`player-item ${selectedPlayers.includes(player) ? "selected" : ""
-              }`}
+            className={`player-item ${
+              selectedPlayers.includes(player) ? "selected" : ""
+            }`}
             onClick={() => handlePlayerSelect(player)}
           >
             {player.name}
