@@ -18,24 +18,24 @@ export const TeamPlayer = ({
       onClick={() => onClick?.(player)}
     >
       <div className="player-card-header">
-        <div className="player-card-rating">{player.average}</div>
+        <div className="player-card-rating">{player.average.toFixed(2)}</div>
         <div className="player-card-name">{player.name}</div>
       </div>
       <div className="player-card-stats">
         <div>
-          ATK <span>{player.attack}</span>
+          ATK <span>{player.attack.toFixed(2)}</span>
         </div>
         <div>
-          DEF <span>{player.defense}</span>
+          DEF <span>{player.defense.toFixed(2)}</span>
         </div>
         <div>
-          FIS <span>{player.physical}</span>
+          FIS <span>{player.physical.toFixed(2)}</span>
         </div>
         <div>
-          VIS <span>{player.vision}</span>
+          VIS <span>{player.vision.toFixed(2)}</span>
         </div>
         <div>
-          TEC <span>{player.technique}</span>
+          TEC <span>{player.technique.toFixed(2)}</span>
         </div>
       </div>
     </div>
