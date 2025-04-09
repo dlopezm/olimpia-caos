@@ -22,6 +22,7 @@ export const TeamView: React.FC<TeamProps> = ({
       <div className="team-players-grid">
         {players.map((player) => (
           <TeamPlayer
+            key={player._id}
             player={player}
             teamColor={teamColor}
             onClick={onClickPlayer}
