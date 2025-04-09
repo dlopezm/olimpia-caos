@@ -87,6 +87,29 @@ export const MatchPlanner = () => {
     [allPlayers],
   );
 
+  useEffect(() => {
+    if (!teams) return;
+
+    const formatTeam = (players: Player[], symbol: string) => {
+      const average =
+        players.reduce((acc, p) => acc + p.average, 0) / players.length;
+      return [
+        `Equip ${symbol}: ${average.toFixed(2)}`,
+        ...players.map((p) => ` ${symbol} ${p.name}`),
+      ].join("\n");
+    };
+
+    const currentUrl = new URL(window.location.href);
+    const output =
+      formatTeam(teams.team1, "▫️") +
+      "\n" +
+      formatTeam(teams.team2, "◾️") +
+      "\n" +
+      currentUrl;
+
+    console.log(output);
+  }, [teams]);
+
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayers((prev) =>
       prev.includes(player)
