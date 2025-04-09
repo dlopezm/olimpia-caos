@@ -4,14 +4,14 @@ import { sanityClient } from "../../sanity-client";
 import { Player } from "../../data/players";
 
 const getBackgroundColor = (value: number): string => {
-  if (value >= 8) return "#e0f2f1";
-  if (value >= 6) return "#e8f5e9";
-  if (value >= 5) return "#fffde7";
-  if (value >= 4) return "#fff3e0";
+  if (value >= 4.25) return "#e0f2f1";
+  if (value >= 3.75) return "#e8f5e9";
+  if (value >= 3) return "#fffde7";
+  if (value >= 2.25) return "#fff3e0";
   return "#ffebee";
 };
 
-const renderStatCell = (value: number, decimals = 1) => (
+const renderStatCell = (value: number, decimals = 2) => (
   <div
     style={{
       backgroundColor: getBackgroundColor(value),
