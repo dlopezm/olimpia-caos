@@ -1,0 +1,83 @@
+@import "/src/theme.css";
+
+.team-comparison {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+  align-items: center; /* center the rows container as a whole */
+}
+
+/* Optionally shrink if .compact is present */
+.team-comparison.compact {
+  gap: 4px;
+}
+
+/* Team names block above the bars */
+.team-names-block {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  text-align: center;
+}
+
+.team-names {
+  display: flex;
+  gap: 4px;
+}
+
+.team-names-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.team-names-list {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-dark);
+}
+
+/* Smaller font in .compact mode */
+.team-names-list.compact-names {
+  font-size: 0.75rem;
+}
+
+/* Each stat row holds bar + label (absolute) */
+.stat-row {
+  width: 100%;
+  text-align: center;
+}
+
+/* bar-wrapper is the relative container for label + bar */
+.bar-wrapper {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  line-height: 0;
+}
+/* The label is pinned to the left edge of the bar */
+.stat-label-side {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  margin-right: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: monospace;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* The bar is within this container and can be fully centered. */
+.centered-bar {
+  display: block;
+  width: 100%;
+}
+/* If .compact on team-comparison, we could shrink the bar if we want */
+.team-comparison.compact .bar-wrapper {
+  width: 250px;
+}

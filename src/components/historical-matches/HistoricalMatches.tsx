@@ -53,7 +53,6 @@ export const HistoricalMatches = () => {
       const data = await sanityClient.fetch(query);
       setMatches(data);
     };
-
     fetchMatches();
   }, []);
 
@@ -73,26 +72,37 @@ export const HistoricalMatches = () => {
 
         return (
           <div key={match._id} className="match-card">
-            <div className="match-header">
-              <div className="match-header-left">
-                <span className="match-date">
-                  {new Date(match.date).toLocaleDateString()}
+            {/* --- Header with badge on left, date & button top row, centered score below --- */}
+            <div className="match-header-wrapper">
+              <div className="match-header">
+                <span className={`match-result-badge ${match.result}`}>
+                  {resultToTitle(match.result)}
                 </span>
-                <span className="match-score">
-                  {match.localScore ?? "-"} : {match.awayScore ?? "-"}
-                </span>
-                <button
-                  className="load-match-button"
-                  onClick={() =>
-                    handleLoadMatch(match.localTeam, match.awayTeam)
-                  }
-                >
-                  Explora <FaMagnifyingGlassChart />
-                </button>
+
+                <div className="match-info-block">
+                  <div className="top-row">
+                    <span className="match-date">
+                      {new Date(match.date).toLocaleDateString()}
+                    </span>
+                    <button
+                      className="load-match-button"
+                      onClick={() =>
+                        handleLoadMatch(match.localTeam, match.awayTeam)
+                      }
+                    >
+                      Explora <FaMagnifyingGlassChart />
+                    </button>
+                  </div>
+
+                  {match.localScore != null && match.awayScore != null && (
+                    <div className="match-score">
+                      {match.localScore}
+                      <span className="colon">:</span>
+                      {match.awayScore}
+                    </div>
+                  )}
+                </div>
               </div>
-              <span className={`match-result-badge ${match.result}`}>
-                {resultToTitle(match.result)}
-              </span>
             </div>
 
             <div className="match-diff">
