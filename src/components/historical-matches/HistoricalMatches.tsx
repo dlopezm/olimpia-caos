@@ -4,13 +4,15 @@ import { FaMagnifyingGlassChart } from "react-icons/fa6";
 import { Player } from "../../data/players";
 import { calculateTeamDifference } from "../../generate-teams";
 import { sanityClient } from "../../sanity-client";
-import { TeamSummary } from "./TeamSummary";
 import "./HistoricalMatches.css";
+import { TeamComparison } from "../shared/TeamComparison";
 
 interface Match {
   _id: string;
   date: string;
   result: "white" | "dark" | "draw";
+  localScore?: number;
+  awayScore?: number;
   localTeam: Player[];
   awayTeam: Player[];
 }
@@ -37,13 +39,15 @@ export const HistoricalMatches = () => {
         _id,
         date,
         result,
+        localScore,
+        awayScore,
         localTeam[]->{
-            _id, name, attack, defense, physical, vision, technique,
-            "average": (attack + defense + physical + vision + technique) / 5
+          _id, name, attack, defense, physical, vision, technique,
+          "average": (attack + defense + physical + vision + technique) / 5
         },
         awayTeam[]->{
-            _id, name, attack, defense, physical, vision, technique,
-            "average": (attack + defense + physical + vision + technique) / 5
+          _id, name, attack, defense, physical, vision, technique,
+          "average": (attack + defense + physical + vision + technique) / 5
         }
       }`;
       const data = await sanityClient.fetch(query);
@@ -64,7 +68,6 @@ export const HistoricalMatches = () => {
 
   return (
     <div className="historical-matches">
-      <h3>Historial de Partits</h3>
       {matches.map((match) => {
         const diff = calculateTeamDifference(match.localTeam, match.awayTeam);
 
@@ -75,19 +78,23 @@ export const HistoricalMatches = () => {
                 <span className="match-date">
                   {new Date(match.date).toLocaleDateString()}
                 </span>
+                <span className="match-score">
+                  {match.localScore ?? "-"} : {match.awayScore ?? "-"}
+                </span>
                 <button
                   className="load-match-button"
                   onClick={() =>
                     handleLoadMatch(match.localTeam, match.awayTeam)
                   }
                 >
-                  <FaMagnifyingGlassChart />
+                  Explora <FaMagnifyingGlassChart />
                 </button>
               </div>
               <span className={`match-result-badge ${match.result}`}>
                 {resultToTitle(match.result)}
               </span>
             </div>
+
             <div className="match-diff">
               {Math.abs(diff).toFixed(2) === "0.00" ? (
                 "Igualtat màxima"
@@ -100,13 +107,11 @@ export const HistoricalMatches = () => {
             </div>
 
             <div className="match-teams">
-              <div className="team-column light-team">
-                <TeamSummary players={match.localTeam} label="◻️" />
-              </div>
-
-              <div className="team-column dark-team">
-                <TeamSummary players={match.awayTeam} label="◼️" />
-              </div>
+              <TeamComparison
+                team1={match.localTeam}
+                team2={match.awayTeam}
+                compact
+              />
             </div>
           </div>
         );

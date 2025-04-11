@@ -6,7 +6,7 @@ import {
 } from "../../generate-teams";
 import { sanityClient } from "../../sanity-client";
 import { TeamView } from "./TeamView";
-import { TeamComparison } from "./TeamComparison";
+import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
 import { allPlayersQuery } from "../../data-utils";
 

@@ -1,0 +1,127 @@
+@import "/src/theme.css";
+
+.combined-bar {
+  margin-bottom: 10px;
+}
+
+/* Shared row layout */
+.combined-bar .bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Label left of the bar */
+.combined-bar .stat-label-side {
+  width: 60px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === 🔥 Default (non-compact) mode === */
+.combined-bar:not(.compact) .bar {
+  flex: 1;
+  height: 24px;
+  font-size: 1rem;
+  position: relative;
+  background: var(--color-bar-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.combined-bar:not(.compact) .stat-value {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0 8px;
+}
+
+.combined-bar:not(.compact) .stat-value.left {
+  color: var(--color-black);
+}
+
+.combined-bar:not(.compact) .stat-value.right {
+  color: var(--color-white);
+}
+
+/* === 🧨 Compact mode === */
+.combined-bar.compact {
+  margin-bottom: 4px;
+}
+
+.combined-bar.compact .stat-label-side {
+  font-size: 0.75rem;
+}
+
+.combined-bar.compact .bar {
+  flex: 1;
+  height: 16px;
+  font-size: 0.85rem;
+  position: relative;
+  background: var(--color-bar-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.combined-bar .stat-value {
+  z-index: 3;
+  position: relative;
+  font-weight: bold;
+  padding: 0 6px;
+}
+
+.combined-bar.compact .stat-value {
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 0 6px;
+}
+
+.combined-bar .stat-value.left {
+  color: var(--color-black);
+}
+
+.combined-bar.compact .stat-value.right {
+  color: var(--color-white);
+}
+
+/* Shared fill and bar center line */
+.combined-bar .fill {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transition:
+    width 0.4s ease,
+    background-color 0.4s ease;
+}
+
+.combined-bar .fill.team1 {
+  background-color: var(--color-bar-light);
+  left: 0;
+}
+
+.combined-bar .fill.team2 {
+  background-color: var(--color-bar-dark);
+  right: 0;
+}
+
+.combined-bar .bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  border-left: 2px dotted var(--color-bar-divider);
+  z-index: 2;
+}
