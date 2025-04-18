@@ -8,6 +8,7 @@ interface TeamProps {
   teamName: string;
   teamColor: "light" | "dark";
   onClickPlayer: (player: Player) => void;
+  advantage: number;
 }
 
 export const TeamView: React.FC<TeamProps> = ({
@@ -15,6 +16,7 @@ export const TeamView: React.FC<TeamProps> = ({
   teamColor,
   teamName,
   onClickPlayer,
+  advantage,
 }) => {
   return (
     <div className="team">
@@ -26,6 +28,7 @@ export const TeamView: React.FC<TeamProps> = ({
             player={player}
             teamColor={teamColor}
             onClick={onClickPlayer}
+            advantage={advantage}
           />
         ))}
       </div>

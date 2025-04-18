@@ -194,12 +194,14 @@ export const MatchPlanner = () => {
               teamName="Equip ◻️"
               teamColor="light"
               onClickPlayer={onClickPlayer}
+              advantage={teams.difference}
             />
             <TeamView
               players={teams.team2}
               teamName="Equip ◼️"
               teamColor="dark"
               onClickPlayer={onClickPlayer}
+              advantage={-teams.difference}
             />
           </div>
           <ShareButton text={shareMessage} />

@@ -1,23 +1,54 @@
 import { Player } from "../../data/players";
 import "./TeamPlayer.css";
 
-import { createAvatar } from '@dicebear/core';
-import { avataaars } from '@dicebear/collection';
-
-
-
+import { createAvatar } from "@dicebear/core";
+import { avataaars } from "@dicebear/collection";
 
 interface SelectedPlayerProps {
   player: Player;
   teamColor: "light" | "dark";
   onClick?: (player: Player) => void;
+  advantage: number;
 }
+
+const MOUTH_BY_ADVANTAGE = {
+  1.5: "smile",
+  0.8: "twinkle",
+  0.4: "default",
+  [-0.4]: "serious",
+  [-0.8]: "sad",
+  [-1.5]: "concerned",
+  [-10000]: "screamOpen",
+} as const;
+
+const EYES_BY_ADVANTAGE = {
+  1.5: "happy",
+  0.8: "closed",
+  0.4: "surprised",
+  [-0.4]: "default",
+  [-0.8]: "eyeRoll",
+  [-1.5]: "cry",
+  [-10000]: "xDizzy",
+} as const;
 
 export const TeamPlayer = ({
   player,
   teamColor,
   onClick,
+  advantage,
 }: SelectedPlayerProps) => {
+  console.log("teamColor", teamColor, "advantage", advantage);
+  const mouth =
+    Object.entries(MOUTH_BY_ADVANTAGE).find(([key]) => {
+      const value = Number(key);
+      return advantage >= value;
+    })?.[1] || "serious";
+
+  const eyes =
+    Object.entries(EYES_BY_ADVANTAGE).find(([key]) => {
+      const value = Number(key);
+      return advantage >= value;
+    })?.[1] || "default";
 
   const avatar = createAvatar(avataaars, {
     seed: player.name,
@@ -26,28 +57,36 @@ export const TeamPlayer = ({
     flip: teamColor === "dark",
     facialHairProbability: 100,
     accessoriesProbability: 100,
-    eyes: ["default"],
+    eyes: [eyes],
     eyebrows: ["default"],
     clothing: ["shirtVNeck"],
     clothesColor: [teamColor === "light" ? "FFFFFF" : "000000"],
-    mouth: player.avatar ? ["twinkle"] : ["serious"],
+
+    mouth: [mouth],
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     top: player.avatar?.hair ? [player.avatar.hair as any] : [],
     hairColor: player.avatar?.hairColor ? [player.avatar.hairColor] : [],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    facialHair: player.avatar?.facialHair ? [player.avatar.facialHair as any] : [],
-    facialHairColor: player.avatar?.facialHairColor ? [player.avatar.facialHairColor] : [],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    accessories: player.avatar?.accessories ? [player.avatar.accessories as any] : [],
-    accessoriesColor: player.avatar?.accessoriesColor ? [player.avatar.accessoriesColor] : [],
-    skinColor: player.avatar?.skinColor ? [player.avatar.skinColor] : ['c4c4c4'], // default grey
-
+    facialHair: player.avatar?.facialHair
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [player.avatar.facialHair as any]
+      : [],
+    facialHairColor: player.avatar?.facialHairColor
+      ? [player.avatar.facialHairColor]
+      : [],
+    accessories: player.avatar?.accessories
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [player.avatar.accessories as any]
+      : [],
+    accessoriesColor: player.avatar?.accessoriesColor
+      ? [player.avatar.accessoriesColor]
+      : [],
+    skinColor: player.avatar?.skinColor
+      ? [player.avatar.skinColor]
+      : ["c4c4c4"], // default grey
   });
 
-
   const svg = avatar.toString();
-
 
   return (
     <div
@@ -56,7 +95,11 @@ export const TeamPlayer = ({
     >
       <div className="player-card-header">
         <div className="player-card-rating">{player.average.toFixed(2)}</div>
-        <svg className="player-card-avatar" viewBox="0 0 100 100" dangerouslySetInnerHTML={{ __html: svg }} />
+        <svg
+          className="player-card-avatar"
+          viewBox="0 0 100 100"
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
         <div className="player-card-name">{player.name}</div>
       </div>
       {!player.isGuest && (
