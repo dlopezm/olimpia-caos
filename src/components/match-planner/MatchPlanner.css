@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.match-planner {
+  padding-bottom: 10px;
+}
+
 .player-list {
   display: flex;
   flex-wrap: wrap;
