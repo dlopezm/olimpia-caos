@@ -27,13 +27,13 @@
   border-color: var(--color-success-border);
 }
 
-.generate-button-wrapper {
+.button-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-.generate-button {
+.button {
   padding: 12px 24px;
   font-size: 18px;
   font-weight: bold;
@@ -45,11 +45,11 @@
   transition: background-color 0.3s ease;
 }
 
-.generate-button:hover:enabled {
+.button:hover:enabled {
   background-color: var(--color-primary-alt);
 }
 
-.generate-button:disabled {
+.button:disabled {
   background-color: var(--color-gray);
   cursor: not-allowed;
 }

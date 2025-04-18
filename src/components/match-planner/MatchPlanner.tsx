@@ -9,6 +9,7 @@ import { TeamView } from "./TeamView";
 import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
 import { allPlayersQuery } from "../../data-utils";
+import { ShareButton } from "./ShareButton";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -22,6 +23,7 @@ function getParamIds(param: string | null): string[] {
 export const MatchPlanner = () => {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+  const [shareMessage, setShareMessage] = useState<string>("");
   const [teams, setTeams] = useState<{
     team1: Player[];
     team2: Player[];
@@ -99,14 +101,11 @@ export const MatchPlanner = () => {
       ].join("\n");
     };
 
-    const currentUrl = new URL(window.location.href);
     const output = [
-      `\`\`\`${formatTeam(teams.team1, "▫️")}`,
+      `${formatTeam(teams.team1, "▫️")}`,
       `${formatTeam(teams.team2, "◾️")}`,
-      currentUrl,
-      `\`\`\``,
     ].join("\n");
-
+    setShareMessage(output);
     console.log(output);
   }, [teams]);
 
@@ -164,10 +163,10 @@ export const MatchPlanner = () => {
         ))}
       </div>
 
-      <div className="generate-button-wrapper">
+      <div className="button-wrapper">
         <button
           onClick={onGenerateTeams}
-          className="generate-button"
+          className="button"
           disabled={selectedPlayers.length < 2}
         >
           Genera equips
@@ -203,6 +202,7 @@ export const MatchPlanner = () => {
               onClickPlayer={onClickPlayer}
             />
           </div>
+          <ShareButton text={shareMessage} />
         </>
       )}
     </div>
