@@ -8,4 +8,13 @@ export interface Player {
   technique: number;
   average: number;
   isGuest: boolean;
+  avatar?: {
+    hair?: string;
+    hairColor?: string;
+    facialHair?: string;
+    facialHairColor?: string;
+    skinColor?: string;
+    accessories?: string;
+    accessoriesColor?: string;
+  };
 }

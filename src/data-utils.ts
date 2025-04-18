@@ -9,5 +9,14 @@ export const allPlayersQuery = (
           vision,
           technique,
           isGuest,
-          "average": (attack + defense + physical + vision + technique) / 5
+          "average": (attack + defense + physical + vision + technique) / 5,
+            avatar {
+              hair,
+              hairColor,
+              facialHair,
+              facialHairColor,
+              skinColor,
+              accessories,
+              accessoriesColor
+            }
         }`;
