@@ -7,6 +7,8 @@ export interface Player {
   vision: number;
   technique: number;
   average: number;
+  mu?: number; // TrueSkill μ value
+  enhancedAverage?: number; // Pre-calculated enhanced average for performance
   isGuest: boolean;
   avatar?: {
     hair?: string;

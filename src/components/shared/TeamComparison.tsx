@@ -2,6 +2,7 @@ import React from "react";
 import { Player } from "../../data/players";
 import { CombinedBar } from "./CombinedBar";
 import "./TeamComparison.css";
+import { calculateEnhancedAverage } from "../../trueskill-utils";
 
 type Props = {
   team1: Player[];
@@ -24,6 +25,7 @@ export const TeamComparison: React.FC<Props> = ({
         vision: acc.vision + p.vision,
         technique: acc.technique + p.technique,
         average: acc.average + p.average,
+        enhancedAverage: acc.enhancedAverage + calculateEnhancedAverage(p)
       }),
       {
         attack: 0,
@@ -32,6 +34,7 @@ export const TeamComparison: React.FC<Props> = ({
         vision: 0,
         technique: 0,
         average: 0,
+        enhancedAverage: 0
       },
     );
 
@@ -41,8 +44,8 @@ export const TeamComparison: React.FC<Props> = ({
   const metrics = [
     {
       label: "Mitjana",
-      left: totals1.average / team1.length,
-      right: totals2.average / team2.length,
+      left: totals1.enhancedAverage / team1.length,
+      right: totals2.enhancedAverage / team2.length,
     },
     {
       label: "Atac",

@@ -2,7 +2,7 @@ import { Player } from "./data/players";
 
 const ITERATIONS = 50; // Number of iterations for the swap optimization
 
-const calculateTotalsPerStat = (team: Player[]) => {
+const calculateTotalsPerStat = (team: Player[], getAverage?: (player: Player) => number) => {
   const sums = team.reduce(
     (acc, player) => {
       acc.attack += player.attack;
@@ -10,7 +10,7 @@ const calculateTotalsPerStat = (team: Player[]) => {
       acc.physical += player.physical;
       acc.vision += player.vision;
       acc.technique += player.technique;
-      acc.average += player.average;
+      acc.average += getAverage ? getAverage(player) : player.average;
       return acc;
     },
     { attack: 0, defense: 0, physical: 0, vision: 0, average: 0, technique: 0 },
@@ -29,16 +29,18 @@ const calculateTotalsPerStat = (team: Player[]) => {
 /**
  * Positive = team1 has advantage
  */
-export const calculateTeamDifference = (team1: Player[], team2: Player[]) => {
-  const totals1 = calculateTotalsPerStat(team1);
-  const totals2 = calculateTotalsPerStat(team2);
+export const calculateTeamDifference = (team1: Player[], team2: Player[], getAverage?: (player: Player) => number) => {
+  const totals1 = calculateTotalsPerStat(team1, getAverage);
+  const totals2 = calculateTotalsPerStat(team2, getAverage);
 
   return totals1.average - totals2.average;
 };
 
-const sortPlayers = (a: Player, b: Player) => {
-  if (a.average !== b.average) {
-    return b.average - a.average;
+const sortPlayers = (a: Player, b: Player, getAverage?: (player: Player) => number) => {
+  const avgA = getAverage ? getAverage(a) : a.average;
+  const avgB = getAverage ? getAverage(b) : b.average;
+  if (avgA !== avgB) {
+    return avgB - avgA;
   }
   return a.name.localeCompare(b.name);
 };
@@ -46,21 +48,23 @@ const sortPlayers = (a: Player, b: Player) => {
 export const sortTeamsAndUpdateDifference = (
   team1: Player[],
   team2: Player[],
+  getAverage?: (player: Player) => number
 ) => {
-  const sortedTeam1 = [...team1].sort(sortPlayers);
-  const sortedTeam2 = [...team2].sort(sortPlayers);
+  const sortedTeam1 = [...team1].sort((a, b) => sortPlayers(a, b, getAverage));
+  const sortedTeam2 = [...team2].sort((a, b) => sortPlayers(a, b, getAverage));
 
-  const difference = calculateTeamDifference(sortedTeam1, sortedTeam2);
+  const difference = calculateTeamDifference(sortedTeam1, sortedTeam2, getAverage);
 
   return { team1: sortedTeam1, team2: sortedTeam2, difference };
 };
 
 export const generateTeams = (
   playerPool: Player[],
+  getAverage?: (player: Player) => number
 ): { team1: Player[]; team2: Player[]; difference: number } => {
   if (playerPool.length < 2) return { team1: [], team2: [], difference: 0 };
 
-  const sortedPlayers = [...playerPool].sort(sortPlayers);
+  const sortedPlayers = [...playerPool].sort((a, b) => sortPlayers(a, b, getAverage));
 
   // Initialize teams by alternating players
   const team1 = [];
@@ -79,7 +83,7 @@ export const generateTeams = (
   for (let k = 0; k < ITERATIONS; k++) {
     const playerIndex1 = Math.floor(Math.random() * team1.length);
     const playerIndex2 = Math.floor(Math.random() * team2.length);
-    const originalDifference = calculateTeamDifference(team1, team2);
+    const originalDifference = calculateTeamDifference(team1, team2, getAverage);
 
     // Swap players
     [team1[playerIndex1], team2[playerIndex2]] = [
@@ -87,7 +91,7 @@ export const generateTeams = (
       team1[playerIndex1],
     ];
 
-    const newDifference = calculateTeamDifference(team1, team2);
+    const newDifference = calculateTeamDifference(team1, team2, getAverage);
 
     if (Math.abs(newDifference) > Math.abs(originalDifference)) {
       // Revert the swap if it worsens the balance
@@ -98,7 +102,7 @@ export const generateTeams = (
     }
   }
 
-  const newTeams = sortTeamsAndUpdateDifference(team1, team2);
+  const newTeams = sortTeamsAndUpdateDifference(team1, team2, getAverage);
 
   if (newTeams.team1[0].name > newTeams.team2[0].name) {
     return {

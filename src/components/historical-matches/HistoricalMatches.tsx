@@ -4,6 +4,8 @@ import { FaMagnifyingGlassChart } from "react-icons/fa6";
 import { Player } from "../../data/players";
 import { calculateTeamDifference } from "../../generate-teams";
 import { sanityClient } from "../../sanity-client";
+import { allMatchesQuery } from "../../data-utils";
+
 import "./HistoricalMatches.css";
 import { TeamComparison } from "../shared/TeamComparison";
 
@@ -35,22 +37,7 @@ export const HistoricalMatches = () => {
 
   useEffect(() => {
     const fetchMatches = async () => {
-      const query = `*[_type == "match"] | order(date desc){
-        _id,
-        date,
-        result,
-        localScore,
-        awayScore,
-        localTeam[]->{
-          _id, name, attack, defense, physical, vision, technique,
-          "average": (attack + defense + physical + vision + technique) / 5
-        },
-        awayTeam[]->{
-          _id, name, attack, defense, physical, vision, technique,
-          "average": (attack + defense + physical + vision + technique) / 5
-        }
-      }`;
-      const data = await sanityClient.fetch(query);
+      const data = await sanityClient.fetch(allMatchesQuery);
       setMatches(data);
     };
     fetchMatches();

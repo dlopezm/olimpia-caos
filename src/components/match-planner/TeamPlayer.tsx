@@ -1,5 +1,7 @@
 import { Player } from "../../data/players";
 import "./TeamPlayer.css";
+import { calculateEnhancedAverage } from "../../trueskill-utils";
+import { TRUESKILL_CONSTANTS } from "../../constants";
 
 import { createAvatar } from "@dicebear/core";
 import { avataaars } from "@dicebear/collection";
@@ -94,7 +96,11 @@ export const TeamPlayer = ({
       onClick={() => onClick?.(player)}
     >
       <div className="player-card-header">
-        <div className="player-card-rating">{player.average.toFixed(2)}</div>
+        <div className="player-card-rating">
+          <div className="enhanced-average">
+            {calculateEnhancedAverage(player).toFixed(2)}
+          </div>
+        </div>
         <svg
           className="player-card-avatar"
           viewBox="0 0 100 100"
@@ -118,6 +124,9 @@ export const TeamPlayer = ({
           </div>
           <div>
             TEC <span>{player.technique.toFixed(2)}</span>
+          </div>
+          <div>
+            TS <span>{(player.mu ?? TRUESKILL_CONSTANTS.DEFAULT_MU).toFixed(1)}</span>
           </div>
         </div>
       )}

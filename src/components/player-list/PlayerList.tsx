@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { sanityClient } from "../../sanity-client";
 import { Player } from "../../data/players";
-import { allPlayersQuery } from "../../data-utils";
+import { allPlayersQuery, allMatchesQuery } from "../../data-utils";
+import { updatePlayersWithTrueSkill, calculateEnhancedAverage, calculateTrueSkillRatings } from "../../trueskill-utils";
+import { TRUESKILL_CONSTANTS } from "../../constants";
 
 const getBackgroundColor = (value: number): string => {
   if (value >= 4.25) return "#e0f2f1";
@@ -31,12 +33,26 @@ export const PlayerList = () => {
   const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
-    const fetchPlayers = async () => {
-      const data = await sanityClient.fetch(allPlayersQuery(false));
-      setPlayers(data);
+    const fetchData = async () => {
+      // Fetch both players and matches
+      const [data, matchesData] = await Promise.all([
+        sanityClient.fetch(allPlayersQuery(false)),
+        sanityClient.fetch(allMatchesQuery)
+      ]);
+
+      // Calculate TrueSkill ratings first
+      calculateTrueSkillRatings(matchesData);
+
+      const playersWithTrueSkill = updatePlayersWithTrueSkill(data);
+      // Pre-calculate enhanced averages to avoid recalculation on every render
+      const playersWithEnhancedAverages = playersWithTrueSkill.map(player => ({
+        ...player,
+        enhancedAverage: calculateEnhancedAverage(player)
+      }));
+      setPlayers(playersWithEnhancedAverages);
     };
 
-    fetchPlayers();
+    fetchData();
   }, []);
 
   const columns: GridColDef[] = [
@@ -84,11 +100,25 @@ export const PlayerList = () => {
       renderCell: (params) => renderStatCell(params.value),
     },
     {
+      field: "mu",
+      headerName: "TS",
+      type: "number",
+      width: 120,
+      renderCell: (params) => renderStatCell(params.value || TRUESKILL_CONSTANTS.DEFAULT_MU, 1),
+    },
+    {
       field: "average",
       headerName: "Mitjana",
       type: "number",
       width: 150,
       renderCell: (params) => renderStatCell(params.value),
+    },
+    {
+      field: "enhancedAverage",
+      headerName: "Mitjana + TS",
+      type: "number",
+      width: 150,
+      renderCell: (params) => renderStatCell(params.value, 2),
     },
   ];
 
@@ -100,7 +130,7 @@ export const PlayerList = () => {
         getRowId={(row) => row._id}
         initialState={{
           sorting: {
-            sortModel: [{ field: "average", sort: "desc" }],
+            sortModel: [{ field: "enhancedAverage", sort: "desc" }],
           },
         }}
         disableColumnFilter

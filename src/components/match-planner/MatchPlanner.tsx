@@ -8,8 +8,9 @@ import { sanityClient } from "../../sanity-client";
 import { TeamView } from "./TeamView";
 import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
-import { allPlayersQuery } from "../../data-utils";
+import { allPlayersQuery, allMatchesQuery } from "../../data-utils";
 import { ShareButton } from "./ShareButton";
+import { updatePlayersWithTrueSkill, calculateEnhancedAverage, calculateTrueSkillRatings } from "../../trueskill-utils";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -29,7 +30,6 @@ export const MatchPlanner = () => {
     team2: Player[];
     difference: number;
   } | null>(null);
-
   // Update the URL when teams change
   useEffect(() => {
     if (!teams) return;
@@ -47,15 +47,24 @@ export const MatchPlanner = () => {
   }, [teams]);
 
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchData = async () => {
       try {
-        const playersData: Player[] = await sanityClient.fetch(
-          allPlayersQuery(true),
-        );
+        // Fetch both players and matches
+        const [playersData, matchesData] = await Promise.all([
+          sanityClient.fetch(allPlayersQuery(true)),
+          sanityClient.fetch(allMatchesQuery)
+        ]);
+
+        // Calculate TrueSkill ratings first
+        calculateTrueSkillRatings(matchesData);
+
         playersData.sort((a: Player, b: Player) =>
           a.name.localeCompare(b.name),
         );
-        setAllPlayers(playersData);
+        
+        // Update players with TrueSkill μ values
+        const playersWithTrueSkill = updatePlayersWithTrueSkill(playersData);
+        setAllPlayers(playersWithTrueSkill);
 
         // Get params from URL
         const url = new URL(window.location.href);
@@ -64,7 +73,7 @@ export const MatchPlanner = () => {
 
         // Match IDs using the first 5 characters
         const matchByPrefix = (prefixes: string[]) =>
-          playersData.filter((player) =>
+          playersWithTrueSkill.filter((player) =>
             prefixes.some((prefix) => player._id.startsWith(prefix)),
           );
 
@@ -74,14 +83,14 @@ export const MatchPlanner = () => {
 
         if (allSelected.length > 0) {
           setSelectedPlayers(allSelected);
-          setTeams(sortTeamsAndUpdateDifference(lightTeam, darkTeam));
+          setTeams(sortTeamsAndUpdateDifference(lightTeam, darkTeam, getEnhancedAverage));
         }
       } catch (error) {
-        console.error("Error fetching players:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchPlayers();
+    fetchData();
   }, []);
 
   const nonGuestPlayers = useMemo(
@@ -89,12 +98,15 @@ export const MatchPlanner = () => {
     [allPlayers],
   );
 
+  // Use the centralized enhanced average calculation
+  const getEnhancedAverage = calculateEnhancedAverage;
+
   useEffect(() => {
     if (!teams) return;
 
     const formatTeam = (players: Player[], symbol: string) => {
       const average =
-        players.reduce((acc, p) => acc + p.average, 0) / players.length;
+        players.reduce((acc, p) => acc + getEnhancedAverage(p), 0) / players.length;
       return [
         `Equip ${symbol}: ${average.toFixed(2)}`,
         ...players.map((p) => ` ${symbol} ${p.name}`),
@@ -118,7 +130,7 @@ export const MatchPlanner = () => {
   };
 
   const onGenerateTeams = () => {
-    const teams = generateTeams(selectedPlayers);
+    const teams = generateTeams(selectedPlayers, getEnhancedAverage);
     setTeams(teams);
   };
 
@@ -132,7 +144,7 @@ export const MatchPlanner = () => {
         const newTeam1 = [...prev.team1];
         newTeam1.splice(playerIndex, 1);
         const newTeam2 = [...prev.team2, player];
-        return sortTeamsAndUpdateDifference(newTeam1, newTeam2);
+        return sortTeamsAndUpdateDifference(newTeam1, newTeam2, getEnhancedAverage);
       });
     }
     if (playerIndex2 !== -1) {
@@ -141,7 +153,7 @@ export const MatchPlanner = () => {
         const newTeam2 = [...prev.team2];
         newTeam2.splice(playerIndex2, 1);
         const newTeam1 = [...prev.team1, player];
-        return sortTeamsAndUpdateDifference(newTeam1, newTeam2);
+        return sortTeamsAndUpdateDifference(newTeam1, newTeam2, getEnhancedAverage);
       });
     }
   };
