@@ -25,7 +25,7 @@ export const TeamComparison: React.FC<Props> = ({
         vision: acc.vision + p.vision,
         technique: acc.technique + p.technique,
         average: acc.average + p.average,
-        enhancedAverage: acc.enhancedAverage + calculateEnhancedAverage(p)
+        enhancedAverage: acc.enhancedAverage + calculateEnhancedAverage(p),
       }),
       {
         attack: 0,
@@ -34,7 +34,7 @@ export const TeamComparison: React.FC<Props> = ({
         vision: 0,
         technique: 0,
         average: 0,
-        enhancedAverage: 0
+        enhancedAverage: 0,
       },
     );
 

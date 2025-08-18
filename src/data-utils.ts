@@ -1,4 +1,4 @@
-import { TRUESKILL_CONSTANTS } from './constants';
+import { TRUESKILL_CONSTANTS } from "./constants";
 
 export const allPlayersQuery = (
   includeGuest: boolean,

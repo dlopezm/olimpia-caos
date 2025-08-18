@@ -1,6 +1,7 @@
-import { TrueSkill } from 'ts-trueskill';
-import { Player } from './data/players';
-import { TRUESKILL_CONSTANTS } from './constants';
+import { TrueSkill } from "ts-trueskill";
+import { Player } from "./data/players";
+import { TRUESKILL_CONSTANTS } from "./constants";
+import { MatchResult } from "./types/match";
 export interface PlayerTrueSkill {
   playerId: string;
   playerName: string;
@@ -9,23 +10,16 @@ export interface PlayerTrueSkill {
   conservativeRating: number; // μ - 3σ (conservative estimate)
 }
 
-export interface MatchResult {
-  _id: string;
-  date: string;
-  result: "white" | "dark" | "draw";
-  localScore?: number;
-  awayScore?: number;
-  localTeam: { _id: string; name: string; average?: number }[];
-  awayTeam: { _id: string; name: string; average?: number }[];
-}
+
 
 // Convert 1-5 rating to TrueSkill μ value
 export const ratingToMu = (rating: number): number => {
   // Map 1-5 to TrueSkill range 15-35
   // This gives room for improvement/decline while staying in reasonable bounds
-  return TRUESKILL_CONSTANTS.MIN_MU + (rating - TRUESKILL_CONSTANTS.MIN_RATING) * 5; // 1→15, 2→20, 3→25, 4→30, 5→35
+  return (
+    TRUESKILL_CONSTANTS.MIN_MU + (rating - TRUESKILL_CONSTANTS.MIN_RATING) * 5
+  ); // 1→15, 2→20, 3→25, 4→30, 5→35
 };
-
 
 // Initialize TrueSkill with default parameters
 const ts = new TrueSkill(
@@ -33,17 +27,21 @@ const ts = new TrueSkill(
   TRUESKILL_CONSTANTS.DEFAULT_SIGMA, // sigma: Default uncertainty
   TRUESKILL_CONSTANTS.BETA, // beta: Skill distance for 76% win probability
   TRUESKILL_CONSTANTS.TAU, // tau: Dynamic factor
-  TRUESKILL_CONSTANTS.DRAW_PROBABILITY // drawProbability: 5% chance of draw
+  TRUESKILL_CONSTANTS.DRAW_PROBABILITY, // drawProbability: 5% chance of draw
 );
 
 // Map to store player TrueSkill ratings
 const playerRatings = new Map<string, PlayerTrueSkill>();
 
 // Initialize a player with TrueSkill values, optionally seeded with initial rating
-const initializePlayer = (playerId: string, playerName: string, initialRating?: number): PlayerTrueSkill => {
+const initializePlayer = (
+  playerId: string,
+  playerName: string,
+  initialRating?: number,
+): PlayerTrueSkill => {
   let mu: number;
   let sigma: number;
-  
+
   if (initialRating !== undefined) {
     // Use the 1-5 rating to seed TrueSkill
     mu = ratingToMu(initialRating);
@@ -54,7 +52,7 @@ const initializePlayer = (playerId: string, playerName: string, initialRating?: 
     mu = rating.mu;
     sigma = rating.sigma;
   }
-  
+
   const playerSkill: PlayerTrueSkill = {
     playerId,
     playerName,
@@ -62,13 +60,17 @@ const initializePlayer = (playerId: string, playerName: string, initialRating?: 
     sigma,
     conservativeRating: mu - 3 * sigma,
   };
-  
+
   playerRatings.set(playerId, playerSkill);
   return playerSkill;
 };
 
 // Get or create player TrueSkill rating
-const getPlayerRating = (playerId: string, playerName: string, initialRating?: number): PlayerTrueSkill => {
+const getPlayerRating = (
+  playerId: string,
+  playerName: string,
+  initialRating?: number,
+): PlayerTrueSkill => {
   if (!playerRatings.has(playerId)) {
     return initializePlayer(playerId, playerName, initialRating);
   }
@@ -77,20 +79,24 @@ const getPlayerRating = (playerId: string, playerName: string, initialRating?: n
 
 // Convert match result to TrueSkill format
 const convertMatchToTrueSkill = (match: MatchResult) => {
-  const localTeam = match.localTeam.map(p => getPlayerRating(p._id, p.name, p.average));
-  const awayTeam = match.awayTeam.map(p => getPlayerRating(p._id, p.name, p.average));
+  const localTeam = match.localTeam.map((p) =>
+    getPlayerRating(p._id, p.name, p.average),
+  );
+  const awayTeam = match.awayTeam.map((p) =>
+    getPlayerRating(p._id, p.name, p.average),
+  );
 
   // Convert to TrueSkill format using ts-trueskill Rating objects
-  const localRatings = localTeam.map(p => ts.createRating(p.mu, p.sigma));
-  const awayRatings = awayTeam.map(p => ts.createRating(p.mu, p.sigma));
+  const localRatings = localTeam.map((p) => ts.createRating(p.mu, p.sigma));
+  const awayRatings = awayTeam.map((p) => ts.createRating(p.mu, p.sigma));
 
   // Determine result based on match outcome
   let result: number[];
-  
+
   // Calculate scores with proper operator precedence
   let localScore: number;
   let awayScore: number;
-  
+
   if (match.localScore !== undefined && match.awayScore !== undefined) {
     // Use actual scores when available
     localScore = match.localScore;
@@ -143,7 +149,7 @@ const updatePlayerRatings = (
   localTeam: PlayerTrueSkill[],
   awayTeam: PlayerTrueSkill[],
   newLocalRatings: any[],
-  newAwayRatings: any[]
+  newAwayRatings: any[],
 ) => {
   // Update local team ratings
   localTeam.forEach((player, index) => {
@@ -165,12 +171,16 @@ const updatePlayerRatings = (
 };
 
 // Process all matches and calculate TrueSkill ratings
-export const calculateTrueSkillRatings = (matches: MatchResult[]): PlayerTrueSkill[] => {
+export const calculateTrueSkillRatings = (
+  matches: MatchResult[],
+): PlayerTrueSkill[] => {
   // Clear previous ratings
   playerRatings.clear();
 
   // Sort matches by date (oldest first) to process chronologically
-  const sortedMatches = [...matches].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedMatches = [...matches].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 
   sortedMatches.forEach((match) => {
     const matchData = convertMatchToTrueSkill(match);
@@ -183,7 +193,7 @@ export const calculateTrueSkillRatings = (matches: MatchResult[]): PlayerTrueSki
       matchData.localTeam,
       matchData.awayTeam,
       newRatings[0],
-      newRatings[1]
+      newRatings[1],
     );
   });
 
@@ -197,7 +207,9 @@ export const getCurrentTrueSkillRatings = (): PlayerTrueSkill[] => {
 };
 
 // Get TrueSkill rating for a specific player
-export const getPlayerTrueSkill = (playerId: string): PlayerTrueSkill | undefined => {
+export const getPlayerTrueSkill = (
+  playerId: string,
+): PlayerTrueSkill | undefined => {
   return playerRatings.get(playerId);
 };
 
@@ -209,9 +221,9 @@ export const getPlayerMu = (playerId: string): number => {
 
 // Update players with their TrueSkill μ values
 export const updatePlayersWithTrueSkill = (players: Player[]): Player[] => {
-  return players.map(player => ({
+  return players.map((player) => ({
     ...player,
-    mu: getPlayerMu(player._id)
+    mu: getPlayerMu(player._id),
   }));
 };
 
@@ -219,6 +231,8 @@ export const updatePlayersWithTrueSkill = (players: Player[]): Player[] => {
 export const calculateEnhancedAverage = (player: Player): number => {
   const baseAverage = player.average;
   const mu = player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU;
-  const muBonus = (mu - TRUESKILL_CONSTANTS.MU_BASELINE) / TRUESKILL_CONSTANTS.MU_BONUS_DIVISOR;
+  const muBonus =
+    (mu - TRUESKILL_CONSTANTS.MU_BASELINE) /
+    TRUESKILL_CONSTANTS.MU_BONUS_DIVISOR;
   return baseAverage + muBonus;
 };

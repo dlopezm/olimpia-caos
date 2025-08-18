@@ -2,11 +2,12 @@ import React from "react";
 import { Player } from "../../data/players";
 import "./TeamView.css";
 import { TeamPlayer } from "./TeamPlayer";
+import { TeamColor } from "../../types/match";
 
 interface TeamProps {
   players: Player[];
   teamName: string;
-  teamColor: "light" | "dark";
+  teamColor: TeamColor;
   onClickPlayer: (player: Player) => void;
   advantage: number;
 }

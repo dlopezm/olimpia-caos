@@ -10,7 +10,12 @@ import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
 import { allPlayersQuery, allMatchesQuery } from "../../data-utils";
 import { ShareButton } from "./ShareButton";
-import { updatePlayersWithTrueSkill, calculateEnhancedAverage, calculateTrueSkillRatings } from "../../trueskill-utils";
+import {
+  updatePlayersWithTrueSkill,
+  calculateEnhancedAverage,
+  calculateTrueSkillRatings,
+} from "../../trueskill-utils";
+import { updatePlayersWithMatchStats } from "../../match-stats-utils";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -52,7 +57,7 @@ export const MatchPlanner = () => {
         // Fetch both players and matches
         const [playersData, matchesData] = await Promise.all([
           sanityClient.fetch(allPlayersQuery(true)),
-          sanityClient.fetch(allMatchesQuery)
+          sanityClient.fetch(allMatchesQuery),
         ]);
 
         // Calculate TrueSkill ratings first
@@ -61,10 +66,14 @@ export const MatchPlanner = () => {
         playersData.sort((a: Player, b: Player) =>
           a.name.localeCompare(b.name),
         );
-        
-        // Update players with TrueSkill μ values
+
+        // Update players with TrueSkill μ values and match statistics
         const playersWithTrueSkill = updatePlayersWithTrueSkill(playersData);
-        setAllPlayers(playersWithTrueSkill);
+        const playersWithStats = updatePlayersWithMatchStats(
+          playersWithTrueSkill,
+          matchesData,
+        );
+        setAllPlayers(playersWithStats);
 
         // Get params from URL
         const url = new URL(window.location.href);
@@ -83,7 +92,13 @@ export const MatchPlanner = () => {
 
         if (allSelected.length > 0) {
           setSelectedPlayers(allSelected);
-          setTeams(sortTeamsAndUpdateDifference(lightTeam, darkTeam, getEnhancedAverage));
+          setTeams(
+            sortTeamsAndUpdateDifference(
+              lightTeam,
+              darkTeam,
+              getEnhancedAverage,
+            ),
+          );
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -106,7 +121,8 @@ export const MatchPlanner = () => {
 
     const formatTeam = (players: Player[], symbol: string) => {
       const average =
-        players.reduce((acc, p) => acc + getEnhancedAverage(p), 0) / players.length;
+        players.reduce((acc, p) => acc + getEnhancedAverage(p), 0) /
+        players.length;
       return [
         `Equip ${symbol}: ${average.toFixed(2)}`,
         ...players.map((p) => ` ${symbol} ${p.name}`),
@@ -144,7 +160,11 @@ export const MatchPlanner = () => {
         const newTeam1 = [...prev.team1];
         newTeam1.splice(playerIndex, 1);
         const newTeam2 = [...prev.team2, player];
-        return sortTeamsAndUpdateDifference(newTeam1, newTeam2, getEnhancedAverage);
+        return sortTeamsAndUpdateDifference(
+          newTeam1,
+          newTeam2,
+          getEnhancedAverage,
+        );
       });
     }
     if (playerIndex2 !== -1) {
@@ -153,7 +173,11 @@ export const MatchPlanner = () => {
         const newTeam2 = [...prev.team2];
         newTeam2.splice(playerIndex2, 1);
         const newTeam1 = [...prev.team1, player];
-        return sortTeamsAndUpdateDifference(newTeam1, newTeam2, getEnhancedAverage);
+        return sortTeamsAndUpdateDifference(
+          newTeam1,
+          newTeam2,
+          getEnhancedAverage,
+        );
       });
     }
   };

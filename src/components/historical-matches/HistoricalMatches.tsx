@@ -8,16 +8,7 @@ import { allMatchesQuery } from "../../data-utils";
 
 import "./HistoricalMatches.css";
 import { TeamComparison } from "../shared/TeamComparison";
-
-interface Match {
-  _id: string;
-  date: string;
-  result: "white" | "dark" | "draw";
-  localScore?: number;
-  awayScore?: number;
-  localTeam: Player[];
-  awayTeam: Player[];
-}
+import { Match } from "../../types/match";
 
 const resultToTitle = (result: string) => {
   switch (result) {
