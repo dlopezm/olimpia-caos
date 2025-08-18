@@ -2,7 +2,7 @@ import { Player } from "../../data/players";
 import "./TeamPlayer.css";
 import { calculateEnhancedAverage } from "../../trueskill-utils";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-import { MatchOutcomeLetter, TeamColor } from "../../types/match";
+import { TeamColor } from "../../types/match";
 
 import { createAvatar } from "@dicebear/core";
 import { avataaars } from "@dicebear/collection";
@@ -132,47 +132,6 @@ export const TeamPlayer = ({
               {(player.mu ?? TRUESKILL_CONSTANTS.DEFAULT_MU).toFixed(1)}
             </span>
           </div>
-          {player.matchStats && (
-            <>
-              <div>
-                Win Rate <span>{player.matchStats.winRate.toFixed(1)}%</span>
-              </div>
-              <div>
-                Last 5{" "}
-                <span style={{ display: "flex", gap: "2px" }}>
-                  {player.matchStats.last5Results.map(
-                    (result: MatchOutcomeLetter, index: number) => (
-                      <span
-                        key={index}
-                        style={{
-                          width: "12px",
-                          height: "12px",
-                          borderRadius: "1px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          backgroundColor:
-                            result === "W"
-                              ? "#4caf50"
-                              : result === "D"
-                                ? "#ff9800"
-                                : "#f44336",
-                        }}
-                      >
-                        {result}
-                      </span>
-                    ),
-                  )}
-                </span>
-              </div>
-              <div>
-                Ratxa <span>{player.matchStats.currentStreak}</span>
-              </div>
-            </>
-          )}
         </div>
       )}
     </div>

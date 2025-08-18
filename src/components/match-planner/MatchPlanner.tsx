@@ -82,7 +82,7 @@ export const MatchPlanner = () => {
 
         // Match IDs using the first 5 characters
         const matchByPrefix = (prefixes: string[]) =>
-          playersWithTrueSkill.filter((player) =>
+          playersWithStats.filter((player) =>
             prefixes.some((prefix) => player._id.startsWith(prefix)),
           );
 
