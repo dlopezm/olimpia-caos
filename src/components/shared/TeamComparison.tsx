@@ -26,6 +26,7 @@ export const TeamComparison: React.FC<Props> = ({
         technique: acc.technique + p.technique,
         average: acc.average + p.average,
         enhancedAverage: acc.enhancedAverage + calculateEnhancedAverage(p),
+        trueSkill: acc.trueSkill + (p.mu || 25.0),
       }),
       {
         attack: 0,
@@ -35,6 +36,7 @@ export const TeamComparison: React.FC<Props> = ({
         technique: 0,
         average: 0,
         enhancedAverage: 0,
+        trueSkill: 0,
       },
     );
 
@@ -46,6 +48,11 @@ export const TeamComparison: React.FC<Props> = ({
       label: "Mitjana",
       left: totals1.enhancedAverage / team1.length,
       right: totals2.enhancedAverage / team2.length,
+    },
+    {
+      label: "TrueSkill",
+      left: totals1.trueSkill / team1.length,
+      right: totals2.trueSkill / team2.length,
     },
     {
       label: "Atac",
