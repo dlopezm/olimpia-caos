@@ -8,7 +8,7 @@ import "./App.css";
 
 const Navigation = () => {
   const location = useLocation();
-  
+
   const isActive = (path: string) => {
     if (path === "/" && location.pathname === "/") return true;
     if (path !== "/" && location.pathname.startsWith(path)) return true;
@@ -17,20 +17,17 @@ const Navigation = () => {
 
   return (
     <nav className="navigation">
-      <Link 
-        to="/" 
-        className={`nav-link ${isActive("/") ? "active" : ""}`}
-      >
+      <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
         Creador d'equips
       </Link>
-      <Link 
-        to="/historial" 
+      <Link
+        to="/historial"
         className={`nav-link ${isActive("/historial") ? "active" : ""}`}
       >
         Historial de partits
       </Link>
-      <Link 
-        to="/jugadors" 
+      <Link
+        to="/jugadors"
         className={`nav-link ${isActive("/jugadors") ? "active" : ""}`}
       >
         Llista de jugadors

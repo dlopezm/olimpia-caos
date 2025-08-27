@@ -1,4 +1,4 @@
-import { Player } from '../data/players';
+import { Player } from "../data/players";
 
 export interface MatchResult {
   _id: string;
@@ -11,7 +11,7 @@ export interface MatchResult {
 }
 
 // Alias for when we need the full Player objects
-export type Match = Omit<MatchResult, 'localTeam' | 'awayTeam'> & {
+export type Match = Omit<MatchResult, "localTeam" | "awayTeam"> & {
   localTeam: Player[];
   awayTeam: Player[];
 };
@@ -20,4 +20,4 @@ export type Match = Omit<MatchResult, 'localTeam' | 'awayTeam'> & {
 export type TeamColor = "light" | "dark";
 
 // Compact outcome for per-player streaks and summaries
-export type MatchOutcomeLetter = 'W' | 'D' | 'L';
+export type MatchOutcomeLetter = "W" | "D" | "L";

@@ -19,7 +19,7 @@ const renderStatRow = (value: number, label: string) => {
   return (
     <div className="stat-row">
       <span className="stat-label">{label}:</span>
-      <span 
+      <span
         className="stat-value"
         style={{ backgroundColor: getBackgroundColor(value) }}
       >
@@ -32,10 +32,10 @@ const renderStatRow = (value: number, label: string) => {
 const renderMatchResult = (result: MatchOutcomeLetter) => {
   const colors = {
     W: "#4caf50",
-    D: "#ff9800", 
-    L: "#f44336"
+    D: "#ff9800",
+    L: "#f44336",
   };
-  
+
   return (
     <span
       className="match-result"
@@ -47,7 +47,7 @@ const renderMatchResult = (result: MatchOutcomeLetter) => {
         fontSize: "12px",
         fontWeight: "bold",
         minWidth: "20px",
-        textAlign: "center"
+        textAlign: "center",
       }}
     >
       {result}
@@ -58,9 +58,9 @@ const renderMatchResult = (result: MatchOutcomeLetter) => {
 export const PlayerPage = () => {
   const { playerId } = useParams<{ playerId: string }>();
   const { getNonGuestPlayers, matches, loading, error } = useData();
-  
+
   const players = getNonGuestPlayers();
-  const player = players.find(p => p._id === playerId);
+  const player = players.find((p) => p._id === playerId);
 
   if (loading) {
     return <div className="loading">Carregant dades...</div>;
@@ -87,16 +87,28 @@ export const PlayerPage = () => {
   const tableData = pairStats.pairs.map((pair, index) => ({
     id: index,
     playerName: pair.playerName,
-    percentTogether: pair.totalMatchesTogether > 0 ? 
-      ((pair.totalMatchesTogether / (pair.totalMatchesTogether + pair.totalMatchesAgainst)) * 100).toFixed(1) : "0.0",
+    percentTogether:
+      pair.totalMatchesTogether > 0
+        ? (
+            (pair.totalMatchesTogether /
+              (pair.totalMatchesTogether + pair.totalMatchesAgainst)) *
+            100
+          ).toFixed(1)
+        : "0.0",
     winsTogether: pair.togetherStats.wins,
     percentWinsTogether: pair.togetherStats.winRate.toFixed(1),
     tiesTogether: pair.togetherStats.draws,
     percentTiesTogether: pair.togetherStats.drawRate.toFixed(1),
     lossesTogether: pair.togetherStats.losses,
     percentLossesTogether: pair.togetherStats.lossRate.toFixed(1),
-    percentAgainst: pair.totalMatchesAgainst > 0 ? 
-      ((pair.totalMatchesAgainst / (pair.totalMatchesTogether + pair.totalMatchesAgainst)) * 100).toFixed(1) : "0.0",
+    percentAgainst:
+      pair.totalMatchesAgainst > 0
+        ? (
+            (pair.totalMatchesAgainst /
+              (pair.totalMatchesTogether + pair.totalMatchesAgainst)) *
+            100
+          ).toFixed(1)
+        : "0.0",
     winsAgainst: pair.againstStats.wins,
     percentWinsAgainst: pair.againstStats.winRate.toFixed(1),
     tiesAgainst: pair.againstStats.draws,
@@ -119,9 +131,7 @@ export const PlayerPage = () => {
       width: 100,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center" }}>
-          {params.value}%
-        </div>
+        <div style={{ textAlign: "center" }}>{params.value}%</div>
       ),
     },
     {
@@ -131,7 +141,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#4caf50", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#4caf50", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -155,7 +167,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#ff9800", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#ff9800", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -179,7 +193,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#f44336", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#f44336", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -203,9 +219,7 @@ export const PlayerPage = () => {
       width: 100,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center" }}>
-          {params.value}%
-        </div>
+        <div style={{ textAlign: "center" }}>{params.value}%</div>
       ),
     },
     {
@@ -215,7 +229,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#4caf50", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#4caf50", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -239,7 +255,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#ff9800", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#ff9800", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -263,7 +281,9 @@ export const PlayerPage = () => {
       width: 80,
       sortable: true,
       renderCell: (params) => (
-        <div style={{ textAlign: "center", color: "#f44336", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", color: "#f44336", fontWeight: "bold" }}
+        >
           {params.value}
         </div>
       ),
@@ -293,14 +313,11 @@ export const PlayerPage = () => {
           />
           <h1>{player.name}</h1>
         </div>
-        <button 
-          className="back-button"
-          onClick={() => window.history.back()}
-        >
+        <button className="back-button" onClick={() => window.history.back()}>
           ← Tornar
         </button>
       </div>
-      
+
       <div className="player-content">
         <div className="player-overview">
           <div className="player-main-section">
@@ -311,25 +328,34 @@ export const PlayerPage = () => {
                   <>
                     <div className="stat-row">
                       <span className="stat-label">% Victòries:</span>
-                      <span className="stat-value">{player.matchStats.winRate.toFixed(1)}%</span>
+                      <span className="stat-value">
+                        {player.matchStats.winRate.toFixed(1)}%
+                      </span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Partits:</span>
-                      <span className="stat-value">{player.matchStats.totalMatches}</span>
+                      <span className="stat-value">
+                        {player.matchStats.totalMatches}
+                      </span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Ratxa:</span>
-                      <span className="stat-value">{player.currentStreak || "0"}</span>
+                      <span className="stat-value">
+                        {player.currentStreak || "0"}
+                      </span>
                     </div>
                   </>
                 )}
               </div>
-              
+
               <div className="attribute-stats">
                 <h3>Estadístiques</h3>
                 {renderStatRow(player.average, "Mitjana")}
                 {renderStatRow(player.enhancedAverage || 0, "Mitjana + TS")}
-                {renderStatRow(player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU, "TrueSkill")}
+                {renderStatRow(
+                  player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU,
+                  "TrueSkill",
+                )}
                 {renderStatRow(player.attack, "ATK")}
                 {renderStatRow(player.defense, "DEF")}
                 {renderStatRow(player.physical, "FIS")}
@@ -344,19 +370,25 @@ export const PlayerPage = () => {
               <h2>Historial de partits</h2>
               <div className="match-stats-grid">
                 <div className="match-stat-item">
-                  <span className="stat-number wins">{player.matchStats.wins}</span>
+                  <span className="stat-number wins">
+                    {player.matchStats.wins}
+                  </span>
                   <span className="stat-label">Victòries</span>
                 </div>
                 <div className="match-stat-item">
-                  <span className="stat-number draws">{player.matchStats.draws}</span>
+                  <span className="stat-number draws">
+                    {player.matchStats.draws}
+                  </span>
                   <span className="stat-label">Empats</span>
                 </div>
                 <div className="match-stat-item">
-                  <span className="stat-number losses">{player.matchStats.losses}</span>
+                  <span className="stat-number losses">
+                    {player.matchStats.losses}
+                  </span>
                   <span className="stat-label">Derrotes</span>
                 </div>
               </div>
-              
+
               {last5Results.length > 0 && (
                 <div className="last-results">
                   <h3>5 últims partits</h3>
@@ -370,18 +402,22 @@ export const PlayerPage = () => {
                 </div>
               )}
 
-              {player.matchStats.allResults && player.matchStats.allResults.length > 0 && (
-                <div className="all-results">
-                  <h3>Historial complet ({player.matchStats.allResults.length} partits)</h3>
-                  <div className="results-list">
-                    {player.matchStats.allResults.map((result, index) => (
-                      <div key={index} className="result-item">
-                        {renderMatchResult(result)}
-                      </div>
-                    ))}
+              {player.matchStats.allResults &&
+                player.matchStats.allResults.length > 0 && (
+                  <div className="all-results">
+                    <h3>
+                      Historial complet ({player.matchStats.allResults.length}{" "}
+                      partits)
+                    </h3>
+                    <div className="results-list">
+                      {player.matchStats.allResults.map((result, index) => (
+                        <div key={index} className="result-item">
+                          {renderMatchResult(result)}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           )}
 

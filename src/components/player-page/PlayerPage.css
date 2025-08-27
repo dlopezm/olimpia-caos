@@ -53,7 +53,8 @@
   min-height: 400px;
 }
 
-.loading, .error {
+.loading,
+.error {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,30 +239,30 @@
     gap: 10px;
     text-align: center;
   }
-  
+
   .player-header {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .player-info-stats {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .match-stats-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .player-header h1 {
     font-size: 2rem;
   }
-  
+
   .player-page {
     padding: 15px;
   }
-  
+
   .pair-stats-table {
     font-size: 0.8rem;
   }

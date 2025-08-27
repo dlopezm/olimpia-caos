@@ -10,8 +10,6 @@ export interface PlayerTrueSkill {
   conservativeRating: number; // μ - 3σ (conservative estimate)
 }
 
-
-
 // Convert 1-5 rating to TrueSkill μ value
 export const ratingToMu = (rating: number): number => {
   // Map 1-5 to TrueSkill range 15-35

@@ -18,7 +18,7 @@ export const TeamPlayer = ({
   advantage,
 }: SelectedPlayerProps) => {
   console.log("teamColor", teamColor, "advantage", advantage);
-  
+
   // Generate avatar using shared utility
   const svg = generatePlayerAvatar(player, 100, teamColor);
 

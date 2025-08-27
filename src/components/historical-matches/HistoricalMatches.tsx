@@ -27,10 +27,10 @@ export const HistoricalMatches = () => {
   // Convert MatchResult to Match by finding full player objects
   const matches: Match[] = useMemo(() => {
     if (rawMatches.length === 0 || players.length === 0) return [];
-    
+
     return rawMatches.map((match: MatchResult) => {
-      const findPlayer = (playerId: string) => 
-        players.find(p => p._id === playerId) || {
+      const findPlayer = (playerId: string) =>
+        players.find((p) => p._id === playerId) || {
           _id: playerId,
           name: "Unknown Player",
           attack: 0,
@@ -44,8 +44,8 @@ export const HistoricalMatches = () => {
 
       return {
         ...match,
-        localTeam: match.localTeam.map(p => findPlayer(p._id)),
-        awayTeam: match.awayTeam.map(p => findPlayer(p._id)),
+        localTeam: match.localTeam.map((p) => findPlayer(p._id)),
+        awayTeam: match.awayTeam.map((p) => findPlayer(p._id)),
       };
     });
   }, [rawMatches, players]);

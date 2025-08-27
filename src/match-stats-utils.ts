@@ -69,7 +69,7 @@ export const calculatePlayerMatchStats = (
   if (results.length > 0) {
     const lastResult = results[results.length - 1]; // Most recent result
     let streakCount = 1;
-    
+
     // Count consecutive same results from the end
     for (let i = results.length - 2; i >= 0; i--) {
       if (results[i] === lastResult) {
@@ -78,7 +78,7 @@ export const calculatePlayerMatchStats = (
         break;
       }
     }
-    
+
     currentStreak = `${streakCount}${lastResult}`;
   }
 

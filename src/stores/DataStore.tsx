@@ -1,14 +1,20 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { Player } from '../data/players';
-import { MatchResult } from '../types/match';
-import { sanityClient } from '../sanity-client';
-import { allPlayersQuery, allMatchesQuery } from '../data-utils';
-import { 
-  calculateTrueSkillRatings, 
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { Player } from "../data/players";
+import { MatchResult } from "../types/match";
+import { sanityClient } from "../sanity-client";
+import { allPlayersQuery, allMatchesQuery } from "../data-utils";
+import {
+  calculateTrueSkillRatings,
   updatePlayersWithTrueSkill,
-  calculateEnhancedAverage 
-} from '../trueskill-utils';
-import { updatePlayersWithMatchStats } from '../match-stats-utils';
+  calculateEnhancedAverage,
+} from "../trueskill-utils";
+import { updatePlayersWithMatchStats } from "../match-stats-utils";
 
 interface DataState {
   players: Player[];
@@ -38,7 +44,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   const fetchAndProcessData = async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
+      setState((prev) => ({ ...prev, loading: true, error: null }));
 
       // Fetch both players and matches
       const [playersData, matchesData] = await Promise.all([
@@ -74,11 +80,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         error: null,
       });
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setState(prev => ({
+      console.error("Error fetching data:", error);
+      setState((prev) => ({
         ...prev,
         loading: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       }));
     }
   };
@@ -88,7 +95,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   }, []);
 
   const getNonGuestPlayers = (): Player[] => {
-    return state.players.filter(player => !player.isGuest);
+    return state.players.filter((player) => !player.isGuest);
   };
 
   const contextValue: DataContextType = {
@@ -98,16 +105,14 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   };
 
   return (
-    <DataContext.Provider value={contextValue}>
-      {children}
-    </DataContext.Provider>
+    <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>
   );
 };
 
 export const useData = (): DataContextType => {
   const context = useContext(DataContext);
   if (context === undefined) {
-    throw new Error('useData must be used within a DataProvider');
+    throw new Error("useData must be used within a DataProvider");
   }
   return context;
 };
