@@ -1,16 +1,7 @@
-import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { sanityClient } from "../../sanity-client";
-import { Player } from "../../data/players";
-import { allPlayersQuery, allMatchesQuery } from "../../data-utils";
-import {
-  updatePlayersWithTrueSkill,
-  calculateEnhancedAverage,
-  calculateTrueSkillRatings,
-} from "../../trueskill-utils";
-import { updatePlayersWithMatchStats } from "../../match-stats-utils";
 import { TRUESKILL_CONSTANTS } from "../../constants";
 import { MatchOutcomeLetter } from "../../types/match";
+import { useData } from "../../stores/DataStore";
 
 const getBackgroundColor = (value: number): string => {
   if (value >= 4.25) return "#e0f2f1";
@@ -36,36 +27,16 @@ const renderStatCell = (value: number, decimals = 2) => (
 );
 
 export const PlayerList = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const { getNonGuestPlayers, loading, error } = useData();
+  const players = getNonGuestPlayers();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Fetch both players and matches
-      const [data, matchesData] = await Promise.all([
-        sanityClient.fetch(allPlayersQuery(false)),
-        sanityClient.fetch(allMatchesQuery),
-      ]);
+  if (loading) {
+    return <div>Carregant dades...</div>;
+  }
 
-      // Calculate TrueSkill ratings first
-      calculateTrueSkillRatings(matchesData);
-
-      const playersWithTrueSkill = updatePlayersWithTrueSkill(data);
-      const playersWithStats = updatePlayersWithMatchStats(
-        playersWithTrueSkill,
-        matchesData,
-      );
-      // Pre-calculate enhanced averages and win rates to avoid recalculation on every render
-      const playersWithEnhancedAverages = playersWithStats.map((player) => ({
-        ...player,
-        enhancedAverage: calculateEnhancedAverage(player),
-        winRate: player.matchStats?.winRate || 0,
-        currentStreak: player.matchStats?.currentStreak || "0",
-      }));
-      setPlayers(playersWithEnhancedAverages);
-    };
-
-    fetchData();
-  }, []);
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   const columns: GridColDef[] = [
     {

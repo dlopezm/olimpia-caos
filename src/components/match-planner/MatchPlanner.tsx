@@ -1,21 +1,15 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Player } from "../../data/players";
 import {
   generateTeams,
   sortTeamsAndUpdateDifference,
 } from "../../generate-teams";
-import { sanityClient } from "../../sanity-client";
 import { TeamView } from "./TeamView";
 import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
-import { allPlayersQuery, allMatchesQuery } from "../../data-utils";
 import { ShareButton } from "./ShareButton";
-import {
-  updatePlayersWithTrueSkill,
-  calculateEnhancedAverage,
-  calculateTrueSkillRatings,
-} from "../../trueskill-utils";
-import { updatePlayersWithMatchStats } from "../../match-stats-utils";
+import { calculateEnhancedAverage } from "../../trueskill-utils";
+import { useData } from "../../stores/DataStore";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -27,7 +21,7 @@ function getParamIds(param: string | null): string[] {
 }
 
 export const MatchPlanner = () => {
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+  const { players, getNonGuestPlayers, loading, error } = useData();
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [shareMessage, setShareMessage] = useState<string>("");
   const [teams, setTeams] = useState<{
@@ -35,6 +29,9 @@ export const MatchPlanner = () => {
     team2: Player[];
     difference: number;
   } | null>(null);
+
+  const nonGuestPlayers = getNonGuestPlayers();
+
   // Update the URL when teams change
   useEffect(() => {
     if (!teams) return;
@@ -51,77 +48,43 @@ export const MatchPlanner = () => {
     window.history.replaceState({}, "", newUrl);
   }, [teams]);
 
+  // Load teams from URL when data is available
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch both players and matches
-        const [playersData, matchesData] = await Promise.all([
-          sanityClient.fetch(allPlayersQuery(true)),
-          sanityClient.fetch(allMatchesQuery),
-        ]);
+    if (players.length === 0) return;
 
-        // Calculate TrueSkill ratings first
-        calculateTrueSkillRatings(matchesData);
+    // Get params from URL
+    const url = new URL(window.location.href);
+    const lightIds = getParamIds(url.searchParams.get("light"));
+    const darkIds = getParamIds(url.searchParams.get("dark"));
 
-        playersData.sort((a: Player, b: Player) =>
-          a.name.localeCompare(b.name),
-        );
+    // Match IDs using the first 5 characters
+    const matchByPrefix = (prefixes: string[]) =>
+      players.filter((player) =>
+        prefixes.some((prefix) => player._id.startsWith(prefix)),
+      );
 
-        // Update players with TrueSkill μ values and match statistics
-        const playersWithTrueSkill = updatePlayersWithTrueSkill(playersData);
-        const playersWithStats = updatePlayersWithMatchStats(
-          playersWithTrueSkill,
-          matchesData,
-        );
-        setAllPlayers(playersWithStats);
+    const lightTeam = matchByPrefix(lightIds);
+    const darkTeam = matchByPrefix(darkIds);
+    const allSelected = [...lightTeam, ...darkTeam];
 
-        // Get params from URL
-        const url = new URL(window.location.href);
-        const lightIds = getParamIds(url.searchParams.get("light"));
-        const darkIds = getParamIds(url.searchParams.get("dark"));
-
-        // Match IDs using the first 5 characters
-        const matchByPrefix = (prefixes: string[]) =>
-          playersWithStats.filter((player) =>
-            prefixes.some((prefix) => player._id.startsWith(prefix)),
-          );
-
-        const lightTeam = matchByPrefix(lightIds);
-        const darkTeam = matchByPrefix(darkIds);
-        const allSelected = [...lightTeam, ...darkTeam];
-
-        if (allSelected.length > 0) {
-          setSelectedPlayers(allSelected);
-          setTeams(
-            sortTeamsAndUpdateDifference(
-              lightTeam,
-              darkTeam,
-              getEnhancedAverage,
-            ),
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const nonGuestPlayers = useMemo(
-    () => allPlayers.filter((player) => !player.isGuest),
-    [allPlayers],
-  );
-
-  // Use the centralized enhanced average calculation
-  const getEnhancedAverage = calculateEnhancedAverage;
+    if (allSelected.length > 0) {
+      setSelectedPlayers(allSelected);
+      setTeams(
+        sortTeamsAndUpdateDifference(
+          lightTeam,
+          darkTeam,
+          calculateEnhancedAverage,
+        ),
+      );
+    }
+  }, [players]);
 
   useEffect(() => {
     if (!teams) return;
 
     const formatTeam = (players: Player[], symbol: string) => {
       const average =
-        players.reduce((acc, p) => acc + getEnhancedAverage(p), 0) /
+        players.reduce((acc, p) => acc + calculateEnhancedAverage(p), 0) /
         players.length;
       return [
         `Equip ${symbol}: ${average.toFixed(2)}`,
@@ -146,7 +109,7 @@ export const MatchPlanner = () => {
   };
 
   const onGenerateTeams = () => {
-    const teams = generateTeams(selectedPlayers, getEnhancedAverage);
+    const teams = generateTeams(selectedPlayers, calculateEnhancedAverage);
     setTeams(teams);
   };
 
@@ -163,7 +126,7 @@ export const MatchPlanner = () => {
         return sortTeamsAndUpdateDifference(
           newTeam1,
           newTeam2,
-          getEnhancedAverage,
+          calculateEnhancedAverage,
         );
       });
     }
@@ -176,11 +139,19 @@ export const MatchPlanner = () => {
         return sortTeamsAndUpdateDifference(
           newTeam1,
           newTeam2,
-          getEnhancedAverage,
+          calculateEnhancedAverage,
         );
       });
     }
   };
+
+  if (loading) {
+    return <div>Carregant dades...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="match-planner">

@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { FaMagnifyingGlassChart } from "react-icons/fa6";
 
 import { Player } from "../../data/players";
 import { calculateTeamDifference } from "../../generate-teams";
-import { sanityClient } from "../../sanity-client";
-import { allMatchesQuery } from "../../data-utils";
-
 import "./HistoricalMatches.css";
 import { TeamComparison } from "../shared/TeamComparison";
-import { Match } from "../../types/match";
+import { Match, MatchResult } from "../../types/match";
+import { useData } from "../../stores/DataStore";
 
 const resultToTitle = (result: string) => {
   switch (result) {
@@ -24,15 +22,33 @@ const resultToTitle = (result: string) => {
 };
 
 export const HistoricalMatches = () => {
-  const [matches, setMatches] = useState<Match[]>([]);
+  const { matches: rawMatches, players, loading, error } = useData();
 
-  useEffect(() => {
-    const fetchMatches = async () => {
-      const data = await sanityClient.fetch(allMatchesQuery);
-      setMatches(data);
-    };
-    fetchMatches();
-  }, []);
+  // Convert MatchResult to Match by finding full player objects
+  const matches: Match[] = useMemo(() => {
+    if (rawMatches.length === 0 || players.length === 0) return [];
+    
+    return rawMatches.map((match: MatchResult) => {
+      const findPlayer = (playerId: string) => 
+        players.find(p => p._id === playerId) || {
+          _id: playerId,
+          name: "Unknown Player",
+          attack: 0,
+          defense: 0,
+          physical: 0,
+          vision: 0,
+          technique: 0,
+          average: 0,
+          isGuest: false,
+        };
+
+      return {
+        ...match,
+        localTeam: match.localTeam.map(p => findPlayer(p._id)),
+        awayTeam: match.awayTeam.map(p => findPlayer(p._id)),
+      };
+    });
+  }, [rawMatches, players]);
 
   const shortId = (id: string) => id.slice(0, 5);
 
@@ -42,6 +58,14 @@ export const HistoricalMatches = () => {
     const base = window.location.pathname.replace(/[^/]+$/, "");
     window.location.href = `${base}?light=${lightIds}&dark=${darkIds}#equipador`;
   };
+
+  if (loading) {
+    return <div>Carregant dades...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="historical-matches">
