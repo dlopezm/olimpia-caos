@@ -1,53 +1,56 @@
-import { useEffect, useState } from "react";
-import { Tabs, TabList, TabPanel, Tab } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { MatchPlanner } from "./match-planner/MatchPlanner";
 import { PlayerList } from "./player-list/PlayerList";
-import "./App.css";
 import { HistoricalMatches } from "./historical-matches/HistoricalMatches";
+import { PlayerPage } from "./player-page/PlayerPage";
 import { DataProvider } from "../stores/DataStore";
+import "./App.css";
 
-const TAB_ANCHORS = ["equipador", "historial", "jugadors"];
-
-const AppContent = () => {
-  const [tabIndex, setTabIndex] = useState(0);
-
-  useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    const index = TAB_ANCHORS.indexOf(hash);
-    if (index !== -1) setTabIndex(index);
-  }, []);
-
-  const handleTabSelect = (index: number) => {
-    window.location.hash = TAB_ANCHORS[index];
-    setTabIndex(index);
+const Navigation = () => {
+  const location = useLocation();
+  
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
   };
 
   return (
-    <div className="app-container">
-      <Tabs
-        className="tabs-container"
-        selectedIndex={tabIndex}
-        onSelect={handleTabSelect}
+    <nav className="navigation">
+      <Link 
+        to="/" 
+        className={`nav-link ${isActive("/") ? "active" : ""}`}
       >
-        <TabList>
-          <Tab>Creador d'equips</Tab>
-          <Tab>Historial de partits</Tab>
-          <Tab>Llista de jugadors</Tab>
-        </TabList>
+        Creador d'equips
+      </Link>
+      <Link 
+        to="/historial" 
+        className={`nav-link ${isActive("/historial") ? "active" : ""}`}
+      >
+        Historial de partits
+      </Link>
+      <Link 
+        to="/jugadors" 
+        className={`nav-link ${isActive("/jugadors") ? "active" : ""}`}
+      >
+        Llista de jugadors
+      </Link>
+    </nav>
+  );
+};
 
-        <TabPanel>
-          <MatchPlanner />
-        </TabPanel>
-
-        <TabPanel>
-          <HistoricalMatches />
-        </TabPanel>
-
-        <TabPanel>
-          <PlayerList />
-        </TabPanel>
-      </Tabs>
+const AppContent = () => {
+  return (
+    <div className="app-container">
+      <Navigation />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<MatchPlanner />} />
+          <Route path="/historial" element={<HistoricalMatches />} />
+          <Route path="/jugadors" element={<PlayerList />} />
+          <Route path="/jugador/:playerId" element={<PlayerPage />} />
+        </Routes>
+      </main>
     </div>
   );
 };

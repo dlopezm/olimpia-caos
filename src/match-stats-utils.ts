@@ -8,6 +8,7 @@ export interface PlayerMatchStats {
   draws: number;
   losses: number;
   last5Results: MatchOutcomeLetter[]; // Last 5 match results, most recent first
+  allResults: MatchOutcomeLetter[]; // All match results, chronologically ordered
   currentStreak: string; // Current streak (e.g., "2W", "5D", "1L")
 }
 
@@ -21,7 +22,7 @@ export const calculatePlayerMatchStats = (
   let losses = 0;
   const results: MatchOutcomeLetter[] = [];
 
-  // Process matches chronologically (oldest first) to get correct order for last 5
+  // Process matches chronologically (oldest first) to get correct order
   const sortedMatches = [...matches].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
@@ -88,6 +89,7 @@ export const calculatePlayerMatchStats = (
     draws,
     losses,
     last5Results,
+    allResults: results, // Store all results
     currentStreak,
   };
 };

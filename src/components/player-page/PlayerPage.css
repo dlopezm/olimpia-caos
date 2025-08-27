@@ -1,0 +1,268 @@
+.player-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.player-title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.player-card-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.player-header h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.back-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.player-content {
+  min-height: 400px;
+}
+
+.loading, .error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: #f44336;
+}
+
+.player-overview {
+  display: grid;
+  gap: 30px;
+}
+
+.player-main-section {
+  background: var(--color-white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.player-info-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.basic-stats h3,
+.attribute-stats h3 {
+  margin: 0 0 20px 0;
+  color: var(--color-text);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.basic-stats,
+.attribute-stats {
+  display: grid;
+  gap: 12px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.stat-label {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.player-match-stats {
+  background: var(--color-white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.player-match-stats h2 {
+  margin: 0 0 25px 0;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.match-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.match-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stat-number.wins {
+  color: #4caf50;
+}
+
+.stat-number.draws {
+  color: #ff9800;
+}
+
+.stat-number.losses {
+  color: #f44336;
+}
+
+.match-stat-item .stat-label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.all-results h3 {
+  margin: 0 0 15px 0;
+  color: var(--color-text);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.results-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.match-result {
+  display: inline-block;
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Player Pair Statistics Table */
+.player-pair-stats {
+  background: var(--color-white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.player-pair-stats h2 {
+  margin: 0 0 25px 0;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.pair-stats-table {
+  overflow-x: auto;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .player-title {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .player-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .player-info-stats {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .match-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .player-header h1 {
+    font-size: 2rem;
+  }
+  
+  .player-page {
+    padding: 15px;
+  }
+  
+  .pair-stats-table {
+    font-size: 0.8rem;
+  }
+}

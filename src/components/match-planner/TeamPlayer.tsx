@@ -1,38 +1,15 @@
 import { Player } from "../../data/players";
-import "./TeamPlayer.css";
-import { calculateEnhancedAverage } from "../../trueskill-utils";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-import { TeamColor } from "../../types/match";
-
-import { createAvatar } from "@dicebear/core";
-import { avataaars } from "@dicebear/collection";
+import { calculateEnhancedAverage } from "../../trueskill-utils";
+import { generatePlayerAvatar } from "../../utils/avatar-utils";
+import "./TeamPlayer.css";
 
 interface SelectedPlayerProps {
   player: Player;
-  teamColor: TeamColor;
+  teamColor: "light" | "dark";
   onClick?: (player: Player) => void;
   advantage: number;
 }
-
-const MOUTH_BY_ADVANTAGE = {
-  1.5: "smile",
-  0.8: "twinkle",
-  0.4: "default",
-  [-0.4]: "serious",
-  [-0.8]: "sad",
-  [-1.5]: "concerned",
-  [-10000]: "screamOpen",
-} as const;
-
-const EYES_BY_ADVANTAGE = {
-  1.5: "happy",
-  0.8: "closed",
-  0.4: "surprised",
-  [-0.4]: "default",
-  [-0.8]: "eyeRoll",
-  [-1.5]: "cry",
-  [-10000]: "xDizzy",
-} as const;
 
 export const TeamPlayer = ({
   player,
@@ -41,55 +18,9 @@ export const TeamPlayer = ({
   advantage,
 }: SelectedPlayerProps) => {
   console.log("teamColor", teamColor, "advantage", advantage);
-  const mouth =
-    Object.entries(MOUTH_BY_ADVANTAGE).find(([key]) => {
-      const value = Number(key);
-      return advantage >= value;
-    })?.[1] || "serious";
-
-  const eyes =
-    Object.entries(EYES_BY_ADVANTAGE).find(([key]) => {
-      const value = Number(key);
-      return advantage >= value;
-    })?.[1] || "default";
-
-  const avatar = createAvatar(avataaars, {
-    seed: player.name,
-    size: 100,
-    radius: 50,
-    flip: teamColor === "dark",
-    facialHairProbability: 100,
-    accessoriesProbability: 100,
-    eyes: [eyes],
-    eyebrows: ["default"],
-    clothing: ["shirtVNeck"],
-    clothesColor: [teamColor === "light" ? "FFFFFF" : "000000"],
-
-    mouth: [mouth],
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    top: player.avatar?.hair ? [player.avatar.hair as any] : [],
-    hairColor: player.avatar?.hairColor ? [player.avatar.hairColor] : [],
-    facialHair: player.avatar?.facialHair
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [player.avatar.facialHair as any]
-      : [],
-    facialHairColor: player.avatar?.facialHairColor
-      ? [player.avatar.facialHairColor]
-      : [],
-    accessories: player.avatar?.accessories
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [player.avatar.accessories as any]
-      : [],
-    accessoriesColor: player.avatar?.accessoriesColor
-      ? [player.avatar.accessoriesColor]
-      : [],
-    skinColor: player.avatar?.skinColor
-      ? [player.avatar.skinColor]
-      : ["c4c4c4"], // default grey
-  });
-
-  const svg = avatar.toString();
+  
+  // Generate avatar using shared utility
+  const svg = generatePlayerAvatar(player, 100, teamColor);
 
   return (
     <div
