@@ -5,10 +5,11 @@ import { MatchPlanner } from "./match-planner/MatchPlanner";
 import { PlayerList } from "./player-list/PlayerList";
 import "./App.css";
 import { HistoricalMatches } from "./historical-matches/HistoricalMatches";
+import { DataProvider } from "../stores/DataStore";
 
 const TAB_ANCHORS = ["equipador", "historial", "jugadors"];
 
-export const App = () => {
+const AppContent = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
@@ -48,5 +49,13 @@ export const App = () => {
         </TabPanel>
       </Tabs>
     </div>
+  );
+};
+
+export const App = () => {
+  return (
+    <DataProvider>
+      <AppContent />
+    </DataProvider>
   );
 };
