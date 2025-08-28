@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-
+import { MatchResultWithId } from "../../match-stats-utils";
 import { useData } from "../../stores/DataStore";
 import { ClickableMatchResult } from "../../utils/match-result-utils";
 import "./PlayerList.css";
@@ -171,7 +171,7 @@ export const PlayerList = () => {
               justifyContent: "center",
             }}
           >
-            {last5Results.map((resultWithId, index: number) => (
+            {last5Results.map((resultWithId: MatchResultWithId, index: number) => (
               <ClickableMatchResult
                 key={index}
                 result={resultWithId.result}
