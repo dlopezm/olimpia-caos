@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Player } from "../../data/players";
 import { CombinedBar } from "./CombinedBar";
 import "./TeamComparison.css";
@@ -15,6 +16,12 @@ export const TeamComparison: React.FC<Props> = ({
   team2,
   compact = false,
 }) => {
+  const navigate = useNavigate();
+
+  // Helper function to navigate to player page
+  const handlePlayerClick = (playerId: string) => {
+    navigate(`/jugador/${playerId}`);
+  };
   // Summation logic
   const getTotals = (team: Player[]) =>
     team.reduce(
@@ -88,13 +95,33 @@ export const TeamComparison: React.FC<Props> = ({
           <div className="team-names">
             <span className="team-names-label">Equip ◻️</span>
             <p className="team-names-list">
-              {team1.map((p) => p.name).join(", ")}
+              {team1.map((p, index) => (
+                <React.Fragment key={p._id}>
+                  <span
+                    className="clickable-player-name"
+                    onClick={() => handlePlayerClick(p._id)}
+                  >
+                    {p.name}
+                  </span>
+                  {index < team1.length - 1 && ", "}
+                </React.Fragment>
+              ))}
             </p>
           </div>
           <div className="team-names">
             <span className="team-names-label">Equip ◼️</span>
             <p className="team-names-list">
-              {team2.map((p) => p.name).join(", ")}
+              {team2.map((p, index) => (
+                <React.Fragment key={p._id}>
+                  <span
+                    className="clickable-player-name"
+                    onClick={() => handlePlayerClick(p._id)}
+                  >
+                    {p.name}
+                  </span>
+                  {index < team2.length - 1 && ", "}
+                </React.Fragment>
+              ))}
             </p>
           </div>
         </div>

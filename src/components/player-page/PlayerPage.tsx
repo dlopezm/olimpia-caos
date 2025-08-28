@@ -1,10 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useData } from "../../stores/DataStore";
 import { TRUESKILL_CONSTANTS } from "../../constants";
 import { MatchOutcomeLetter } from "../../types/match";
 import { generatePlayerAvatar } from "../../utils/avatar-utils";
 import { calculatePlayerPairStats } from "../../utils/player-pair-stats";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridColumnGroupingModel,
+} from "@mui/x-data-grid";
 import "./PlayerPage.css";
 
 const getBackgroundColor = (value: number): string => {
@@ -58,9 +62,18 @@ const renderMatchResult = (result: MatchOutcomeLetter) => {
 export const PlayerPage = () => {
   const { playerId } = useParams<{ playerId: string }>();
   const { getNonGuestPlayers, matches, loading, error } = useData();
+  const navigate = useNavigate();
 
   const players = getNonGuestPlayers();
   const player = players.find((p) => p._id === playerId);
+
+  // Helper function to find player by name and navigate to their page
+  const handlePlayerClick = (playerName: string) => {
+    const targetPlayer = players.find((p) => p.name === playerName);
+    if (targetPlayer) {
+      navigate(`/jugador/${targetPlayer._id}`);
+    }
+  };
 
   if (loading) {
     return <div className="loading">Carregant dades...</div>;
@@ -123,12 +136,24 @@ export const PlayerPage = () => {
       headerName: "Jugador",
       width: 150,
       sortable: true,
+      renderCell: (params) => (
+        <div
+          style={{
+            cursor: "pointer",
+            color: "#1976d2",
+            textDecoration: "underline",
+          }}
+          onClick={() => handlePlayerClick(params.value)}
+        >
+          {params.value}
+        </div>
+      ),
     },
     {
       field: "percentTogether",
-      headerName: "% Junts",
+      headerName: "%",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center" }}>{params.value}%</div>
@@ -136,9 +161,9 @@ export const PlayerPage = () => {
     },
     {
       field: "winsTogether",
-      headerName: "V Junts",
+      headerName: "W",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -150,9 +175,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentWinsTogether",
-      headerName: "%V Junts",
+      headerName: "%W",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#4caf50" }}>
@@ -162,9 +187,9 @@ export const PlayerPage = () => {
     },
     {
       field: "tiesTogether",
-      headerName: "E Junts",
+      headerName: "D",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -176,9 +201,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentTiesTogether",
-      headerName: "%E Junts",
+      headerName: "%D",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#ff9800" }}>
@@ -188,9 +213,9 @@ export const PlayerPage = () => {
     },
     {
       field: "lossesTogether",
-      headerName: "D Junts",
+      headerName: "L",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -202,9 +227,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentLossesTogether",
-      headerName: "%D Junts",
+      headerName: "%L",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#f44336" }}>
@@ -214,9 +239,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentAgainst",
-      headerName: "% Contra",
+      headerName: "%",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center" }}>{params.value}%</div>
@@ -224,9 +249,9 @@ export const PlayerPage = () => {
     },
     {
       field: "winsAgainst",
-      headerName: "V Contra",
+      headerName: "W",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -238,9 +263,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentWinsAgainst",
-      headerName: "%V Contra",
+      headerName: "%W",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#4caf50" }}>
@@ -250,9 +275,9 @@ export const PlayerPage = () => {
     },
     {
       field: "tiesAgainst",
-      headerName: "E Contra",
+      headerName: "D",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -264,9 +289,9 @@ export const PlayerPage = () => {
     },
     {
       field: "percentTiesAgainst",
-      headerName: "%E Contra",
+      headerName: "%D",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#ff9800" }}>
@@ -276,9 +301,9 @@ export const PlayerPage = () => {
     },
     {
       field: "lossesAgainst",
-      headerName: "D Contra",
+      headerName: "L",
       type: "number",
-      width: 80,
+      width: 60,
       sortable: true,
       renderCell: (params) => (
         <div
@@ -290,15 +315,44 @@ export const PlayerPage = () => {
     },
     {
       field: "percentLossesAgainst",
-      headerName: "%D Contra",
+      headerName: "%L",
       type: "number",
-      width: 100,
+      width: 80,
       sortable: true,
       renderCell: (params) => (
         <div style={{ textAlign: "center", color: "#f44336" }}>
           {params.value}%
         </div>
       ),
+    },
+  ];
+
+  const columnGroupingModel: GridColumnGroupingModel = [
+    {
+      groupId: "together",
+      headerName: "Al mateix equip",
+      children: [
+        { field: "percentTogether" },
+        { field: "winsTogether" },
+        { field: "percentWinsTogether" },
+        { field: "tiesTogether" },
+        { field: "percentTiesTogether" },
+        { field: "lossesTogether" },
+        { field: "percentLossesTogether" },
+      ],
+    },
+    {
+      groupId: "against",
+      headerName: "En equips contraris",
+      children: [
+        { field: "percentAgainst" },
+        { field: "winsAgainst" },
+        { field: "percentWinsAgainst" },
+        { field: "tiesAgainst" },
+        { field: "percentTiesAgainst" },
+        { field: "lossesAgainst" },
+        { field: "percentLossesAgainst" },
+      ],
     },
   ];
 
@@ -428,6 +482,7 @@ export const PlayerPage = () => {
                 <DataGrid
                   rows={tableData}
                   columns={columns}
+                  columnGroupingModel={columnGroupingModel}
                   getRowId={(row) => row.id}
                   initialState={{
                     sorting: {
@@ -445,6 +500,11 @@ export const PlayerPage = () => {
                     },
                     "& .MuiDataGrid-cell": {
                       borderBottom: "1px solid #e0e0e0",
+                    },
+                    "& .MuiDataGrid-columnGroupHeader": {
+                      backgroundColor: "#e3f2fd",
+                      borderBottom: "1px solid #bbdefb",
+                      fontWeight: "bold",
                     },
                   }}
                 />

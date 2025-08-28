@@ -38,6 +38,19 @@
   color: var(--color-gray-dark);
 }
 
+.clickable-player-name {
+  color: #1976d2;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.clickable-player-name:hover {
+  color: #1565c0;
+  text-decoration: none;
+}
+
 /* Smaller font in .compact mode */
 .team-names-list.compact-names {
   font-size: 0.75rem;
