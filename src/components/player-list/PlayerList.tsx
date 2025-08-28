@@ -29,8 +29,14 @@ const renderStatCell = (value: number, decimals = 2) => (
 
 export const PlayerList = () => {
   const { getNonGuestPlayers, loading, error } = useData();
-  const players = getNonGuestPlayers();
+  const rawPlayers = getNonGuestPlayers();
   const navigate = useNavigate();
+
+  // Add totalMatches field to players for sorting
+  const players = rawPlayers.map(player => ({
+    ...player,
+    totalMatches: player.matchStats?.totalMatches || 0,
+  }));
 
   if (loading) {
     return <div>Carregant dades...</div>;
@@ -127,6 +133,18 @@ export const PlayerList = () => {
       width: 100,
       renderCell: (params) => (
         <div className="stat-cell">{params.value.toFixed(1)}%</div>
+      ),
+    },
+    {
+      field: "totalMatches",
+      headerName: "Partits",
+      type: "number",
+      width: 80,
+      sortable: true,
+      renderCell: (params) => (
+        <div className="stat-cell" style={{ fontWeight: "500" }}>
+          {params.value}
+        </div>
       ),
     },
     {
