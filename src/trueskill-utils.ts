@@ -1,4 +1,4 @@
-import { TrueSkill } from "ts-trueskill";
+import { TrueSkill, Rating } from "ts-trueskill";
 import { Player } from "./data/players";
 import { TRUESKILL_CONSTANTS } from "./constants";
 import { MatchResult } from "./types/match";
@@ -89,7 +89,6 @@ const convertMatchToTrueSkill = (match: MatchResult) => {
   const awayRatings = awayTeam.map((p) => ts.createRating(p.mu, p.sigma));
 
   // Determine result based on match outcome
-  let result: number[];
 
   // Calculate scores with proper operator precedence
   let localScore: number;
@@ -119,7 +118,7 @@ const convertMatchToTrueSkill = (match: MatchResult) => {
     }
   }
 
-  result = [localScore, awayScore];
+  const result = [localScore, awayScore];
 
   // For TrueSkill, we need to pass ranks to indicate the result
   // teams: [localRatings, awayRatings] - so local is index 0, away is index 1
@@ -146,8 +145,8 @@ const convertMatchToTrueSkill = (match: MatchResult) => {
 const updatePlayerRatings = (
   localTeam: PlayerTrueSkill[],
   awayTeam: PlayerTrueSkill[],
-  newLocalRatings: any[],
-  newAwayRatings: any[],
+  newLocalRatings: Rating[],
+  newAwayRatings: Rating[],
 ) => {
   // Update local team ratings
   localTeam.forEach((player, index) => {

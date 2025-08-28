@@ -1,16 +1,18 @@
 import { Player } from "./data/players";
 import { MatchResult, MatchOutcomeLetter } from "./types/match";
 
+export interface MatchResultWithId {
+  result: MatchOutcomeLetter;
+  MatchId: string;
+}
+
 export interface PlayerMatchStats {
   winRate: number; // Percentage of wins (0-100)
   totalMatches: number;
   wins: number;
   draws: number;
   losses: number;
-  last5Results: MatchOutcomeLetter[]; // Last 5 match results, most recent first
-  last5MatchIds: string[]; // Last 5 match IDs, most recent first
-  allResults: MatchOutcomeLetter[]; // All match results, chronologically ordered
-  allMatchIds: string[]; // All match IDs, chronologically ordered
+  allResults: MatchResultWithId[]; // All match results with IDs, chronologically ordered
   currentStreak: string; // Current streak (e.g., "2W", "5D", "1L")
 }
 
@@ -22,8 +24,7 @@ export const calculatePlayerMatchStats = (
   let wins = 0;
   let draws = 0;
   let losses = 0;
-  const results: MatchOutcomeLetter[] = [];
-  const matchIds: string[] = [];
+  const results: MatchResultWithId[] = [];
 
   // Process matches chronologically (oldest first) to get correct order
   const sortedMatches = [...matches].sort(
@@ -58,26 +59,24 @@ export const calculatePlayerMatchStats = (
       losses++;
     }
 
-    results.push(result);
-    matchIds.push(match._id);
+    results.push({
+      result,
+      MatchId: match._id,
+    });
   });
 
   const totalMatches = wins + draws + losses;
   const winRate = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;
 
-  // Get last 5 results (most recent last)
-  const last5Results = results.slice(-5);
-  const last5MatchIds = matchIds.slice(-5);
-
   // Calculate current streak
   let currentStreak = "0";
   if (results.length > 0) {
-    const lastResult = results[results.length - 1]; // Most recent result
+    const lastResult = results[results.length - 1].result; // Most recent result
     let streakCount = 1;
 
     // Count consecutive same results from the end
     for (let i = results.length - 2; i >= 0; i--) {
-      if (results[i] === lastResult) {
+      if (results[i].result === lastResult) {
         streakCount++;
       } else {
         break;
@@ -93,10 +92,7 @@ export const calculatePlayerMatchStats = (
     wins,
     draws,
     losses,
-    last5Results,
-    last5MatchIds,
-    allResults: results, // Store all results
-    allMatchIds: matchIds, // Store all match IDs
+    allResults: results, // Store all results with IDs
     currentStreak,
   };
 };

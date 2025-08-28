@@ -64,9 +64,6 @@ export const PlayerPage = () => {
   // Generate avatar using shared utility
   const svg = generatePlayerAvatar(player, 100);
 
-  // Derive last 5 results from the full list
-  const last5Results = player.matchStats?.allResults?.slice(-5) || [];
-
   // Calculate player pair statistics
   const pairStats = calculatePlayerPairStats(playerId!, players, matches);
 
@@ -417,27 +414,6 @@ export const PlayerPage = () => {
                 </div>
               </div>
 
-              {last5Results.length > 0 && (
-                <div className="last-results">
-                  <h3>5 últims partits</h3>
-                  <div className="results-list">
-                    {last5Results.map((result, index) => {
-                      const matchId = player.matchStats?.last5MatchIds?.[index];
-                      return (
-                        <div key={index} className="result-item">
-                          <ClickableMatchResult
-                            result={result}
-                            matchId={matchId}
-                            navigate={navigate}
-                            size="medium"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
               {player.matchStats.allResults &&
                 player.matchStats.allResults.length > 0 && (
                   <div className="all-results">
@@ -446,19 +422,20 @@ export const PlayerPage = () => {
                       partits)
                     </h3>
                     <div className="results-list">
-                      {player.matchStats.allResults.map((result, index) => {
-                        const matchId = player.matchStats?.allMatchIds?.[index];
-                        return (
-                          <div key={index} className="result-item">
-                            <ClickableMatchResult
-                              result={result}
-                              matchId={matchId}
-                              navigate={navigate}
-                              size="medium"
-                            />
-                          </div>
-                        );
-                      })}
+                      {player.matchStats.allResults.map(
+                        (resultWithId, index) => {
+                          return (
+                            <div key={index} className="result-item">
+                              <ClickableMatchResult
+                                result={resultWithId.result}
+                                matchId={resultWithId.MatchId}
+                                navigate={navigate}
+                                size="medium"
+                              />
+                            </div>
+                          );
+                        },
+                      )}
                     </div>
                   </div>
                 )}

@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-import { MatchOutcomeLetter } from "../../types/match";
+
 import { useData } from "../../stores/DataStore";
 import { ClickableMatchResult } from "../../utils/match-result-utils";
 import "./PlayerList.css";
@@ -156,9 +156,11 @@ export const PlayerList = () => {
       sortable: false,
       renderCell: (params) => {
         const stats = params.row.matchStats;
-        if (!stats || !stats.last5Results || stats.last5Results.length === 0) {
+        if (!stats) {
           return <div className="stat-cell">-</div>;
         }
+
+        const last5Results = stats.allResults?.slice(-5) || [];
 
         return (
           <div
@@ -169,17 +171,15 @@ export const PlayerList = () => {
               justifyContent: "center",
             }}
           >
-            {stats.last5Results.map(
-              (result: MatchOutcomeLetter, index: number) => (
-                <ClickableMatchResult
-                  key={index}
-                  result={result}
-                  matchId={stats.last5MatchIds?.[index] || ""}
-                  navigate={navigate}
-                  size="small"
-                />
-              ),
-            )}
+            {last5Results.map((resultWithId, index: number) => (
+              <ClickableMatchResult
+                key={index}
+                result={resultWithId.result}
+                matchId={resultWithId.MatchId}
+                navigate={navigate}
+                size="small"
+              />
+            ))}
           </div>
         );
       },

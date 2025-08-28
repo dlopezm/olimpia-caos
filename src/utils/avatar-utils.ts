@@ -25,17 +25,13 @@ export const generatePlayerAvatar = (
           : "FFFFFF",
     ],
     mouth: ["serious"],
-    top: player.avatar?.hair ? [player.avatar.hair as any] : [],
+    top: player.avatar?.hair ? [player.avatar.hair] : [],
     hairColor: player.avatar?.hairColor ? [player.avatar.hairColor] : [],
-    facialHair: player.avatar?.facialHair
-      ? [player.avatar.facialHair as any]
-      : [],
+    facialHair: player.avatar?.facialHair ? [player.avatar.facialHair] : [],
     facialHairColor: player.avatar?.facialHairColor
       ? [player.avatar.facialHairColor]
       : [],
-    accessories: player.avatar?.accessories
-      ? [player.avatar.accessories as any]
-      : [],
+    accessories: player.avatar?.accessories ? [player.avatar.accessories] : [],
     accessoriesColor: player.avatar?.accessoriesColor
       ? [player.avatar.accessoriesColor]
       : [],
