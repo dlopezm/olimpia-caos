@@ -73,7 +73,7 @@ export const HistoricalMatches = () => {
         const diff = calculateTeamDifference(match.localTeam, match.awayTeam);
 
         return (
-          <div key={match._id} className="match-card">
+          <div key={match._id} className="match-card" data-match-id={match._id}>
             {/* --- Header with badge on left, date & button top row, centered score below --- */}
             <div className="match-header-wrapper">
               <div className="match-header">

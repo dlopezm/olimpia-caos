@@ -1,0 +1,11 @@
+/* DataGrid cell styling for proper badge alignment */
+.stat-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 4px !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+}

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { TRUESKILL_CONSTANTS } from "../../constants";
 import { MatchOutcomeLetter } from "../../types/match";
 import { useData } from "../../stores/DataStore";
+import { ClickableMatchResult } from "../../utils/match-result-utils";
+import "./PlayerList.css";
 
 const getBackgroundColor = (value: number): string => {
   if (value >= 4.25) return "#e0f2f1";
@@ -33,7 +35,7 @@ export const PlayerList = () => {
   const navigate = useNavigate();
 
   // Add totalMatches field to players for sorting
-  const players = rawPlayers.map(player => ({
+  const players = rawPlayers.map((player) => ({
     ...player,
     totalMatches: player.matchStats?.totalMatches || 0,
   }));
@@ -154,39 +156,30 @@ export const PlayerList = () => {
       sortable: false,
       renderCell: (params) => {
         const stats = params.row.matchStats;
-        if (!stats || !stats.allResults || stats.allResults.length === 0) {
+        if (!stats || !stats.last5Results || stats.last5Results.length === 0) {
           return <div className="stat-cell">-</div>;
         }
 
-        // Derive last 5 results from the full list
-        const last5Results = stats.allResults.slice(-5);
-
         return (
-          <div className="stat-cell" style={{ display: "flex", gap: "2px" }}>
-            {last5Results.map((result: MatchOutcomeLetter, index: number) => (
-              <span
-                key={index}
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "2px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "10px",
-                  fontWeight: "bold",
-                  color: "white",
-                  backgroundColor:
-                    result === "W"
-                      ? "#4caf50"
-                      : result === "D"
-                        ? "#ff9800"
-                        : "#f44336",
-                }}
-              >
-                {result}
-              </span>
-            ))}
+          <div
+            style={{
+              display: "flex",
+              gap: "2px",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {stats.last5Results.map(
+              (result: MatchOutcomeLetter, index: number) => (
+                <ClickableMatchResult
+                  key={index}
+                  result={result}
+                  matchId={stats.last5MatchIds?.[index] || ""}
+                  navigate={navigate}
+                  size="small"
+                />
+              ),
+            )}
           </div>
         );
       },
@@ -269,6 +262,12 @@ export const PlayerList = () => {
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#f4f4f4",
             fontWeight: "bold",
+          },
+          "& .MuiDataGrid-cell": {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "4px",
           },
         }}
       />

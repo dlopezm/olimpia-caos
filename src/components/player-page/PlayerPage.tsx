@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useData } from "../../stores/DataStore";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-import { MatchOutcomeLetter } from "../../types/match";
 import { generatePlayerAvatar } from "../../utils/avatar-utils";
 import { calculatePlayerPairStats } from "../../utils/player-pair-stats";
+import { ClickableMatchResult } from "../../utils/match-result-utils";
 import {
   DataGrid,
   GridColDef,
@@ -30,32 +30,6 @@ const renderStatRow = (value: number, label: string) => {
         {value.toFixed(2)}
       </span>
     </div>
-  );
-};
-
-const renderMatchResult = (result: MatchOutcomeLetter) => {
-  const colors = {
-    W: "#4caf50",
-    D: "#ff9800",
-    L: "#f44336",
-  };
-
-  return (
-    <span
-      className="match-result"
-      style={{
-        backgroundColor: colors[result],
-        color: "white",
-        padding: "4px 8px",
-        borderRadius: "4px",
-        fontSize: "12px",
-        fontWeight: "bold",
-        minWidth: "20px",
-        textAlign: "center",
-      }}
-    >
-      {result}
-    </span>
   );
 };
 
@@ -447,11 +421,19 @@ export const PlayerPage = () => {
                 <div className="last-results">
                   <h3>5 últims partits</h3>
                   <div className="results-list">
-                    {last5Results.map((result, index) => (
-                      <div key={index} className="result-item">
-                        {renderMatchResult(result)}
-                      </div>
-                    ))}
+                    {last5Results.map((result, index) => {
+                      const matchId = player.matchStats?.last5MatchIds?.[index];
+                      return (
+                        <div key={index} className="result-item">
+                          <ClickableMatchResult
+                            result={result}
+                            matchId={matchId}
+                            navigate={navigate}
+                            size="medium"
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -464,11 +446,19 @@ export const PlayerPage = () => {
                       partits)
                     </h3>
                     <div className="results-list">
-                      {player.matchStats.allResults.map((result, index) => (
-                        <div key={index} className="result-item">
-                          {renderMatchResult(result)}
-                        </div>
-                      ))}
+                      {player.matchStats.allResults.map((result, index) => {
+                        const matchId = player.matchStats?.allMatchIds?.[index];
+                        return (
+                          <div key={index} className="result-item">
+                            <ClickableMatchResult
+                              result={result}
+                              matchId={matchId}
+                              navigate={navigate}
+                              size="medium"
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
