@@ -1,0 +1,3 @@
+Never ever stage changes. Just don't use `git add`.
+Don't run the app.
+Don't move the .cursorrules file
