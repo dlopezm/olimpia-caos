@@ -16,12 +16,19 @@ export const TeamTrueSkillDisplay: React.FC<TeamTrueSkillDisplayProps> = ({
   beforeRatings,
   afterRatings,
 }) => {
+  // Sort players by enhanced average (TS+Avg) in descending order
+  const sortedTeam = [...team].sort((a, b) => {
+    const aEnhanced = a.enhancedAverage || 0;
+    const bEnhanced = b.enhancedAverage || 0;
+    return bEnhanced - aEnhanced; // Descending order (highest first)
+  });
+
   return (
     <div className="team-trueskill-display">
       <h3 className="team-header">{teamName}</h3>
 
       <div className="players-list">
-        {team.map((player) => (
+        {sortedTeam.map((player) => (
           <PlayerTrueSkillDisplay
             key={player._id}
             player={player}
