@@ -1,7 +1,7 @@
 import { Player } from "../../data/players";
 import { TRUESKILL_CONSTANTS } from "../../constants";
 import { calculateEnhancedAverage } from "../../trueskill-utils";
-import { generatePlayerAvatar } from "../../utils/avatar-utils";
+import { PlayerAvatar } from "../shared/PlayerAvatar";
 import "./TeamPlayer.css";
 
 interface SelectedPlayerProps {
@@ -19,9 +19,6 @@ export const TeamPlayer = ({
 }: SelectedPlayerProps) => {
   console.log("teamColor", teamColor, "advantage", advantage);
 
-  // Generate avatar using shared utility
-  const svg = generatePlayerAvatar(player, 100, teamColor);
-
   return (
     <div
       className={`player-card ${teamColor === "light" ? "team-light" : "team-dark"}`}
@@ -33,10 +30,11 @@ export const TeamPlayer = ({
             {calculateEnhancedAverage(player).toFixed(2)}
           </div>
         </div>
-        <svg
+        <PlayerAvatar
+          player={player}
+          size={100}
+          teamColor={teamColor}
           className="player-card-avatar"
-          viewBox="0 0 100 100"
-          dangerouslySetInnerHTML={{ __html: svg }}
         />
         <div className="player-card-name">{player.name}</div>
       </div>

@@ -1,0 +1,339 @@
+@import "/src/theme.css";
+
+/* ================================
+   MATCH CARD CONTAINER
+   ================================ */
+
+.match-card {
+  border: 1px solid var(--color-gray);
+  border-radius: 10px;
+  background: var(--color-white);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px var(--color-shadow);
+}
+
+/* ================================
+   MATCH HEADER SECTION
+   ================================ */
+
+.match-header-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.match-header {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  border-bottom: 1px solid var(--color-bar-bg);
+  padding-bottom: 10px;
+}
+
+.match-info-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 220px;
+}
+
+.match-date {
+  font-size: 0.85rem;
+  color: var(--color-gray-dark);
+}
+
+.load-match-button {
+  padding: 4px 8px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-match-button:hover {
+  background-color: var(--color-primary-alt);
+}
+
+/* ================================
+   MATCH RESULT BADGES
+   ================================ */
+
+.match-result-badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.match-result-badge.white {
+  background-color: var(--color-team-light);
+  color: var(--color-win-light-text);
+  border: 1px solid var(--color-team-light);
+}
+
+.match-result-badge.dark {
+  background-color: var(--color-team-dark);
+  color: var(--color-white);
+  border: 1px solid var(--color-border-dark);
+}
+
+.match-result-badge.draw {
+  background-color: var(--color-draw);
+  color: var(--color-text);
+  border: 1px solid var(--color-gray);
+}
+
+/* ================================
+   MATCH SCORE DISPLAY
+   ================================ */
+
+.match-score {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 2rem;
+  font-family: monospace;
+  font-weight: 900;
+  color: var(--color-text);
+}
+
+.colon {
+  min-width: 1ch;
+  text-align: center;
+}
+
+/* ================================
+   MATCH METADATA SECTIONS
+   ================================ */
+
+.match-diff {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 10px 0;
+  color: var(--color-border-dark);
+}
+
+.match-teams {
+  padding: 6px 0 4px;
+}
+
+/* ================================
+   PLAYER DETAILS SECTION
+   ================================ */
+
+.match-player-details {
+  background: var(--color-white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.match-player-details h2 {
+  margin: 0 0 25px 0;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.teams-trueskill {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* ================================
+   TEAM TRUESKILL DISPLAY
+   ================================ */
+
+.team-trueskill-display {
+  margin-bottom: 30px;
+}
+
+.team-header {
+  margin: 0 0 15px 0;
+  color: var(--color-text);
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ================================
+   INDIVIDUAL PLAYER DISPLAY
+   ================================ */
+
+.player-trueskill-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  background: var(--color-gray-light);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.player-info:hover {
+  opacity: 0.7;
+}
+
+.player-avatar-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  overflow: hidden;
+  background-color: var(--color-gray-light);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.player-name {
+  font-weight: 500;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+/* ================================
+   RATINGS TABLE LAYOUT
+   ================================ */
+
+.ratings-table {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  gap: 8px 12px;
+  align-items: center;
+  font-family: monospace;
+  min-width: 280px;
+}
+
+.ratings-header,
+.ratings-row {
+  display: contents;
+}
+
+.header-cell {
+  font-size: 0.75rem;
+  color: var(--color-gray-dark);
+  font-weight: 600;
+  text-align: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-cell:first-child {
+  text-align: left;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  font-weight: 500;
+  text-align: left;
+}
+
+.rating-value {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text);
+  text-align: center;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+}
+
+.change-cell {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ================================
+   RATING CHANGE INDICATORS
+   ================================ */
+
+.rating-change {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.rating-change.positive {
+  color: #4caf50;
+}
+
+.rating-change.negative {
+  color: #f44336;
+}
+
+.rating-change.neutral {
+  color: var(--color-gray-dark);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  .player-trueskill-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ratings-table {
+    grid-template-columns: auto 1fr 1fr 1fr;
+    gap: 6px 8px;
+    min-width: 100%;
+  }
+
+  .header-cell,
+  .rating-value {
+    font-size: 0.8rem;
+  }
+
+  .metric-label {
+    font-size: 0.8rem;
+  }
+
+  .teams-trueskill {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .match-player-details {
+    padding: 20px;
+  }
+}

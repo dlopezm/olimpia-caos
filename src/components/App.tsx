@@ -3,6 +3,7 @@ import { MatchPlanner } from "./match-planner/MatchPlanner";
 import { PlayerList } from "./player-list/PlayerList";
 import { HistoricalMatches } from "./historical-matches/HistoricalMatches";
 import { PlayerPage } from "./player-page/PlayerPage";
+import { MatchPage } from "./match-page/MatchPage";
 import { DataProvider } from "../stores/DataStore";
 import "./App.css";
 
@@ -46,6 +47,7 @@ const AppContent = () => {
           <Route path="/historial" element={<HistoricalMatches />} />
           <Route path="/jugadors" element={<PlayerList />} />
           <Route path="/jugador/:playerId" element={<PlayerPage />} />
+          <Route path="/partit/:matchId" element={<MatchPage />} />
         </Routes>
       </main>
     </div>

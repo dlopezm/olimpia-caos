@@ -203,6 +203,211 @@ export const getCurrentTrueSkillRatings = (): PlayerTrueSkill[] => {
   return Array.from(playerRatings.values()).sort((a, b) => b.mu - a.mu);
 };
 
+// Calculate TrueSkill ratings up to a specific match (not including the match)
+export const calculateTrueSkillRatingsUpToMatch = (
+  matches: MatchResult[],
+  targetMatchId: string,
+): Map<string, PlayerTrueSkill> => {
+  // Clear ratings
+  const tempRatings = new Map<string, PlayerTrueSkill>();
+
+  // Sort matches by date (oldest first) to process chronologically
+  const sortedMatches = [...matches].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+
+  // Find the index of the target match
+  const targetIndex = sortedMatches.findIndex(
+    (match) => match._id === targetMatchId,
+  );
+  if (targetIndex === -1) {
+    throw new Error(`Match with ID ${targetMatchId} not found`);
+  }
+
+  // Process only matches before the target match
+  const matchesBeforeTarget = sortedMatches.slice(0, targetIndex);
+
+  matchesBeforeTarget.forEach((match) => {
+    // Get or initialize player ratings for this temporary calculation
+    const getOrInitializeTempPlayer = (
+      playerId: string,
+      playerName: string,
+      initialRating?: number,
+    ): PlayerTrueSkill => {
+      if (!tempRatings.has(playerId)) {
+        let mu: number;
+        let sigma: number;
+
+        if (initialRating !== undefined) {
+          mu = ratingToMu(initialRating);
+          sigma = TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
+        } else {
+          const rating = ts.createRating();
+          mu = rating.mu;
+          sigma = rating.sigma;
+        }
+
+        const playerSkill: PlayerTrueSkill = {
+          playerId,
+          playerName,
+          mu,
+          sigma,
+          conservativeRating: mu - 3 * sigma,
+        };
+
+        tempRatings.set(playerId, playerSkill);
+      }
+      return tempRatings.get(playerId)!;
+    };
+
+    const localTeam = match.localTeam.map((p) =>
+      getOrInitializeTempPlayer(p._id, p.name, p.average),
+    );
+    const awayTeam = match.awayTeam.map((p) =>
+      getOrInitializeTempPlayer(p._id, p.name, p.average),
+    );
+
+    // Convert to TrueSkill format
+    const localRatings = localTeam.map((p) => ts.createRating(p.mu, p.sigma));
+    const awayRatings = awayTeam.map((p) => ts.createRating(p.mu, p.sigma));
+
+    // Determine ranks
+    let ranks: number[];
+    if (match.result === "draw") {
+      ranks = [0, 0];
+    } else if (match.result === "white") {
+      ranks = [0, 1];
+    } else {
+      ranks = [1, 0];
+    }
+
+    // Calculate new ratings
+    const newRatings = ts.rate([localRatings, awayRatings], ranks);
+
+    // Update temporary ratings
+    localTeam.forEach((player, index) => {
+      const newRating = newRatings[0][index];
+      player.mu = newRating.mu;
+      player.sigma = newRating.sigma;
+      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+      tempRatings.set(player.playerId, player);
+    });
+
+    awayTeam.forEach((player, index) => {
+      const newRating = newRatings[1][index];
+      player.mu = newRating.mu;
+      player.sigma = newRating.sigma;
+      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+      tempRatings.set(player.playerId, player);
+    });
+  });
+
+  return tempRatings;
+};
+
+// Calculate TrueSkill ratings including a specific match
+export const calculateTrueSkillRatingsIncludingMatch = (
+  matches: MatchResult[],
+  targetMatchId: string,
+): Map<string, PlayerTrueSkill> => {
+  // Get ratings up to the match
+  const ratingsBeforeMatch = calculateTrueSkillRatingsUpToMatch(
+    matches,
+    targetMatchId,
+  );
+
+  // Find the target match
+  const targetMatch = matches.find((match) => match._id === targetMatchId);
+  if (!targetMatch) {
+    throw new Error(`Match with ID ${targetMatchId} not found`);
+  }
+
+  // Apply the target match to get after ratings
+  const localTeam = targetMatch.localTeam.map((p) => {
+    const existingRating = ratingsBeforeMatch.get(p._id);
+    if (existingRating) {
+      return existingRating;
+    }
+
+    // Initialize if not found
+    const mu = ratingToMu(p.average || TRUESKILL_CONSTANTS.DEFAULT_MU / 5);
+    const sigma = TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
+    const playerSkill: PlayerTrueSkill = {
+      playerId: p._id,
+      playerName: p.name,
+      mu,
+      sigma,
+      conservativeRating: mu - 3 * sigma,
+    };
+    ratingsBeforeMatch.set(p._id, playerSkill);
+    return playerSkill;
+  });
+
+  const awayTeam = targetMatch.awayTeam.map((p) => {
+    const existingRating = ratingsBeforeMatch.get(p._id);
+    if (existingRating) {
+      return existingRating;
+    }
+
+    // Initialize if not found
+    const mu = ratingToMu(p.average || TRUESKILL_CONSTANTS.DEFAULT_MU / 5);
+    const sigma = TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
+    const playerSkill: PlayerTrueSkill = {
+      playerId: p._id,
+      playerName: p.name,
+      mu,
+      sigma,
+      conservativeRating: mu - 3 * sigma,
+    };
+    ratingsBeforeMatch.set(p._id, playerSkill);
+    return playerSkill;
+  });
+
+  // Convert to TrueSkill format
+  const localRatings = localTeam.map((p) => ts.createRating(p.mu, p.sigma));
+  const awayRatings = awayTeam.map((p) => ts.createRating(p.mu, p.sigma));
+
+  // Determine ranks
+  let ranks: number[];
+  if (targetMatch.result === "draw") {
+    ranks = [0, 0];
+  } else if (targetMatch.result === "white") {
+    ranks = [0, 1];
+  } else {
+    ranks = [1, 0];
+  }
+
+  // Calculate new ratings
+  const newRatings = ts.rate([localRatings, awayRatings], ranks);
+
+  // Update ratings with the match results
+  const afterRatings = new Map(ratingsBeforeMatch);
+
+  localTeam.forEach((player, index) => {
+    const newRating = newRatings[0][index];
+    const updatedPlayer: PlayerTrueSkill = {
+      ...player,
+      mu: newRating.mu,
+      sigma: newRating.sigma,
+      conservativeRating: newRating.mu - 3 * newRating.sigma,
+    };
+    afterRatings.set(player.playerId, updatedPlayer);
+  });
+
+  awayTeam.forEach((player, index) => {
+    const newRating = newRatings[1][index];
+    const updatedPlayer: PlayerTrueSkill = {
+      ...player,
+      mu: newRating.mu,
+      sigma: newRating.sigma,
+      conservativeRating: newRating.mu - 3 * newRating.sigma,
+    };
+    afterRatings.set(player.playerId, updatedPlayer);
+  });
+
+  return afterRatings;
+};
+
 // Get TrueSkill rating for a specific player
 export const getPlayerTrueSkill = (
   playerId: string,

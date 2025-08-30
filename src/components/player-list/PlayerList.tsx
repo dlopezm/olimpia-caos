@@ -171,15 +171,17 @@ export const PlayerList = () => {
               justifyContent: "center",
             }}
           >
-            {last5Results.map((resultWithId: MatchResultWithId, index: number) => (
-              <ClickableMatchResult
-                key={index}
-                result={resultWithId.result}
-                matchId={resultWithId.MatchId}
-                navigate={navigate}
-                size="small"
-              />
-            ))}
+            {last5Results.map(
+              (resultWithId: MatchResultWithId, index: number) => (
+                <ClickableMatchResult
+                  key={index}
+                  result={resultWithId.result}
+                  matchId={resultWithId.MatchId}
+                  navigate={navigate}
+                  size="small"
+                />
+              ),
+            )}
           </div>
         );
       },

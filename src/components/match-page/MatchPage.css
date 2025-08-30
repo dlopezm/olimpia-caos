@@ -1,0 +1,74 @@
+@import "/src/theme.css";
+
+.match-page {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.match-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.match-page-header h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.back-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background: var(--color-primary-alt);
+}
+
+.match-content {
+  min-height: 400px;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: var(--color-gray-dark);
+}
+
+.error {
+  color: #f44336;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .match-page-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .match-page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .match-page {
+    padding: 15px;
+  }
+}

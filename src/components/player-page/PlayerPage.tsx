@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useData } from "../../stores/DataStore";
 import { TRUESKILL_CONSTANTS } from "../../constants";
-import { generatePlayerAvatar } from "../../utils/avatar-utils";
+import { PlayerAvatar } from "../shared/PlayerAvatar";
 import { calculatePlayerPairStats } from "../../utils/player-pair-stats";
 import { ClickableMatchResult } from "../../utils/match-result-utils";
 import {
@@ -60,9 +60,6 @@ export const PlayerPage = () => {
   if (!player) {
     return <div className="error">Jugador no trobat</div>;
   }
-
-  // Generate avatar using shared utility
-  const svg = generatePlayerAvatar(player, 100);
 
   // Calculate player pair statistics
   const pairStats = calculatePlayerPairStats(playerId!, players, matches);
@@ -331,10 +328,10 @@ export const PlayerPage = () => {
     <div className="player-page">
       <div className="player-header">
         <div className="player-title">
-          <svg
+          <PlayerAvatar
+            player={player}
+            size={100}
             className="player-card-avatar"
-            viewBox="0 0 100 100"
-            dangerouslySetInnerHTML={{ __html: svg }}
           />
           <h1>{player.name}</h1>
         </div>

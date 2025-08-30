@@ -34,19 +34,7 @@ export const ClickableMatchResult: React.FC<ClickableMatchResultProps> = ({
 
   const handleClick = () => {
     if (matchId && navigate) {
-      navigate("/historial");
-      setTimeout(() => {
-        const matchElement = document.querySelector(
-          `[data-match-id="${matchId}"]`,
-        );
-        if (matchElement) {
-          matchElement.scrollIntoView({ behavior: "smooth", block: "center" });
-          matchElement.classList.add("highlight-match");
-          setTimeout(() => {
-            matchElement.classList.remove("highlight-match");
-          }, 2000);
-        }
-      }, 100);
+      navigate(`/partit/${matchId}`);
     }
   };
 
@@ -82,7 +70,7 @@ export const ClickableMatchResult: React.FC<ClickableMatchResultProps> = ({
           e.currentTarget.style.boxShadow = "none";
         }
       }}
-      title={matchId ? "Click to view match details" : ""}
+      title={matchId ? "Fer clic per veure els detalls del partit" : ""}
     >
       {result}
     </span>
