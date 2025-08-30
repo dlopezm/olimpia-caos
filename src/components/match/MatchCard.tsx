@@ -4,17 +4,20 @@ import "./match.css";
 import { calculateTeamDifference } from "../../generate-teams";
 import { MatchHeader } from "./MatchHeader";
 import { TeamComparison } from "../shared/TeamComparison";
+import { PlayerTrueSkill } from "../../trueskill-utils";
 
 interface MatchCardProps {
   match: Match;
   onExplore: (match: Match) => void;
   compact?: boolean;
+  beforeRatings?: Map<string, PlayerTrueSkill>;
 }
 
 export const MatchCard: React.FC<MatchCardProps> = ({
   match,
   onExplore,
   compact = true,
+  beforeRatings,
 }) => {
   const difference = calculateTeamDifference(match.localTeam, match.awayTeam);
 
@@ -45,6 +48,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           team1={match.localTeam}
           team2={match.awayTeam}
           compact={compact}
+          beforeRatings={beforeRatings}
         />
       </div>
     </div>

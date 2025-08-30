@@ -6,6 +6,7 @@ import "./HistoricalMatches.css";
 import { Match, MatchResult } from "../../types/match";
 import { useData } from "../../stores/DataStore";
 import { MatchCard } from "../match";
+import { PlayerTrueSkill, getAllPlayerTrueSkillFromSnapshot } from "../../trueskill-utils";
 
 export const HistoricalMatches = () => {
   const { matches: rawMatches, players, loading, error } = useData();
@@ -49,16 +50,43 @@ export const HistoricalMatches = () => {
     navigate(`/partit/${match._id}`);
   };
 
+  // Helper function to get TrueSkill ratings for a specific match
+  const getTrueSkillRatingsForMatch = (matchId: string): { before: Map<string, PlayerTrueSkill> } => {
+    // Sort matches by date to find chronological order
+    const sortedMatches = [...rawMatches].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+
+    const currentMatchIndex = sortedMatches.findIndex(m => m._id === matchId);
+    if (currentMatchIndex === -1) {
+      return { before: new Map() };
+    }
+
+    // Before ratings: from previous match snapshot (if exists)
+    let beforeRatings = new Map<string, PlayerTrueSkill>();
+    if (currentMatchIndex > 0) {
+      const previousMatch = sortedMatches[currentMatchIndex - 1];
+      beforeRatings = getAllPlayerTrueSkillFromSnapshot(previousMatch);
+    }
+
+    return { before: beforeRatings };
+  };
+
   return (
     <div className="historical-matches">
-      {matches.map((match) => (
-        <MatchCard
-          key={match._id}
-          match={match}
-          onExplore={handleExplore}
-          compact={true}
-        />
-      ))}
+      {matches.map((match) => {
+        const { before } = getTrueSkillRatingsForMatch(match._id);
+        
+        return (
+          <MatchCard
+            key={match._id}
+            match={match}
+            onExplore={handleExplore}
+            compact={true}
+            beforeRatings={before}
+          />
+        );
+      })}
     </div>
   );
 };

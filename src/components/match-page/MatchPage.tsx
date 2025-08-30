@@ -4,6 +4,7 @@ import { Match, MatchResult } from "../../types/match";
 import { useMemo } from "react";
 import { Player } from "../../data/players";
 import { MatchCard, MatchPlayerDetails } from "../match";
+import { PlayerTrueSkill, getAllPlayerTrueSkillFromSnapshot } from "../../trueskill-utils";
 import "./MatchPage.css";
 
 export const MatchPage = () => {
@@ -38,6 +39,30 @@ export const MatchPage = () => {
 
   const match = matches.find((m) => m._id === matchId);
 
+  // Calculate TrueSkill ratings for this match
+  const { beforeRatings } = useMemo(() => {
+    if (!matchId) return { beforeRatings: new Map() };
+
+    // Sort matches by date to find chronological order
+    const sortedMatches = [...rawMatches].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+
+    const currentMatchIndex = sortedMatches.findIndex(m => m._id === matchId);
+    if (currentMatchIndex === -1) {
+      return { beforeRatings: new Map() };
+    }
+
+    // Before ratings: from previous match snapshot (if exists)
+    let beforeRatings = new Map<string, PlayerTrueSkill>();
+    if (currentMatchIndex > 0) {
+      const previousMatch = sortedMatches[currentMatchIndex - 1];
+      beforeRatings = getAllPlayerTrueSkillFromSnapshot(previousMatch);
+    }
+
+    return { beforeRatings };
+  }, [matchId, rawMatches]);
+
   if (loading) {
     return <div className="loading">Carregant dades...</div>;
   }
@@ -64,7 +89,12 @@ export const MatchPage = () => {
       </div>
 
       <div className="match-content">
-        <MatchCard match={match} onExplore={handleExplore} compact={false} />
+        <MatchCard 
+          match={match} 
+          onExplore={handleExplore} 
+          compact={false} 
+          beforeRatings={beforeRatings}
+        />
 
         <MatchPlayerDetails match={match} allMatches={rawMatches} />
       </div>

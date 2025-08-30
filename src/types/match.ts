@@ -8,6 +8,7 @@ export interface MatchResult {
   awayScore?: number;
   localTeam: { _id: string; name: string; average?: number }[];
   awayTeam: { _id: string; name: string; average?: number }[];
+  playerTSSnapshot?: { [playerId: string]: { mu: number; sigma: number; conservativeRating: number; playerName: string } };
 }
 
 // Alias for when we need the full Player objects

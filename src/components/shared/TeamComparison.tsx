@@ -3,18 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { Player } from "../../data/players";
 import { CombinedBar } from "./CombinedBar";
 import "./TeamComparison.css";
-import { calculateEnhancedAverage } from "../../trueskill-utils";
+import { calculateEnhancedAverage, PlayerTrueSkill } from "../../trueskill-utils";
 
 type Props = {
   team1: Player[];
   team2: Player[];
   compact?: boolean;
+  beforeRatings?: Map<string, PlayerTrueSkill>;
 };
 
 export const TeamComparison: React.FC<Props> = ({
   team1,
   team2,
   compact = false,
+  beforeRatings,
 }) => {
   const navigate = useNavigate();
 
@@ -50,17 +52,46 @@ export const TeamComparison: React.FC<Props> = ({
   const totals1 = getTotals(team1);
   const totals2 = getTotals(team2);
 
-  const metrics = [
+  // Calculate TrueSkill averages for before/after if available
+  const getTeamTrueSkillAverage = (team: Player[], ratings: Map<string, PlayerTrueSkill> | undefined): number => {
+    if (!ratings) return 0;
+    const validRatings = team
+      .map(player => ratings.get(player._id))
+      .filter(rating => rating !== undefined)
+      .map(rating => rating!.mu);
+    return validRatings.length > 0 
+      ? validRatings.reduce((sum, mu) => sum + mu, 0) / validRatings.length 
+      : 0;
+  };
+
+  const team1BeforeTS = getTeamTrueSkillAverage(team1, beforeRatings);
+  const team2BeforeTS = getTeamTrueSkillAverage(team2, beforeRatings);
+
+  const baseMetrics = [
     {
       label: "Mitjana",
       left: totals1.enhancedAverage / team1.length,
       right: totals2.enhancedAverage / team2.length,
     },
     {
-      label: "TrueSkill",
+      label: "TS Actual",
       left: totals1.trueSkill / team1.length,
       right: totals2.trueSkill / team2.length,
     },
+  ];
+
+  const trueSkillMetrics = [];
+  if (beforeRatings && team1BeforeTS > 0 && team2BeforeTS > 0) {
+    trueSkillMetrics.push({
+      label: "TS pre-partit",
+      left: team1BeforeTS,
+      right: team2BeforeTS,
+    });
+  }
+
+  const metrics = [
+    ...baseMetrics,
+    ...trueSkillMetrics,
     {
       label: "Atac",
       left: totals1.attack / team1.length,

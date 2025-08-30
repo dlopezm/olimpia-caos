@@ -111,6 +111,7 @@
 .stat-label {
   font-weight: 500;
   color: var(--color-text-secondary);
+  cursor: help;
 }
 
 .stat-value {
@@ -121,6 +122,26 @@
   border-radius: 4px;
   min-width: 60px;
   text-align: center;
+}
+
+.stat-value.trueskill-value {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.stat-value.enhanced-avg-value {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.stat-value.sigma-value {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.stat-value.conservative-value {
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }
 
 .player-match-stats {

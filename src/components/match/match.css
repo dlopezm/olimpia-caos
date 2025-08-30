@@ -233,11 +233,11 @@
 
 .ratings-table {
   display: grid;
-  grid-template-columns: auto 1fr 1fr 1fr;
+  grid-template-columns: auto 1fr 1fr 1fr 1fr;
   gap: 8px 12px;
   align-items: center;
   font-family: monospace;
-  min-width: 280px;
+  min-width: 360px;
 }
 
 .ratings-header,
@@ -280,6 +280,16 @@
   font-size: 0.9rem;
 }
 
+.current-value {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  text-align: center;
+  padding: 2px 4px;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 4px;
+}
+
 /* ================================
    RATING CHANGE INDICATORS
    ================================ */
@@ -314,7 +324,7 @@
   }
 
   .ratings-table {
-    grid-template-columns: auto 1fr 1fr 1fr;
+    grid-template-columns: auto 1fr 1fr 1fr 1fr;
     gap: 6px 8px;
     min-width: 100%;
   }

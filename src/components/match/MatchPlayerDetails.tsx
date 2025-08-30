@@ -2,8 +2,7 @@ import React, { useMemo } from "react";
 import { Match, MatchResult } from "../../types/match";
 import {
   PlayerTrueSkill,
-  calculateTrueSkillRatingsUpToMatch,
-  calculateTrueSkillRatingsIncludingMatch,
+  getAllPlayerTrueSkillFromSnapshot,
 } from "../../trueskill-utils";
 import { TeamTrueSkillDisplay } from "./TeamTrueSkillDisplay";
 
@@ -18,18 +17,37 @@ export const MatchPlayerDetails: React.FC<MatchPlayerDetailsProps> = ({
 }) => {
   const { beforeRatings, afterRatings } = useMemo(() => {
     try {
-      const before = calculateTrueSkillRatingsUpToMatch(allMatches, match._id);
-      const after = calculateTrueSkillRatingsIncludingMatch(
-        allMatches,
-        match._id,
+      // Sort matches by date to find the chronological order
+      const sortedMatches = [...allMatches].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       );
 
+      // Find current match index
+      const currentMatchIndex = sortedMatches.findIndex(m => m._id === match._id);
+      if (currentMatchIndex === -1) {
+        throw new Error(`Match with ID ${match._id} not found`);
+      }
+
+      // For "before" ratings: get snapshot from the previous match (if exists)
+      let beforeRatings = new Map<string, PlayerTrueSkill>();
+      if (currentMatchIndex > 0) {
+        const previousMatch = sortedMatches[currentMatchIndex - 1];
+        beforeRatings = getAllPlayerTrueSkillFromSnapshot(previousMatch);
+      }
+      // If no previous match, beforeRatings remains empty (initial state)
+
+      // For "after" ratings: get snapshot from the current match
+      const currentMatchResult = allMatches.find(m => m._id === match._id);
+      const afterRatings = currentMatchResult 
+        ? getAllPlayerTrueSkillFromSnapshot(currentMatchResult)
+        : new Map<string, PlayerTrueSkill>();
+
       return {
-        beforeRatings: before,
-        afterRatings: after,
+        beforeRatings,
+        afterRatings,
       };
     } catch (error) {
-      console.error("Error calculating TrueSkill ratings for match:", error);
+      console.error("Error getting TrueSkill ratings from snapshots:", error);
       return {
         beforeRatings: new Map<string, PlayerTrueSkill>(),
         afterRatings: new Map<string, PlayerTrueSkill>(),

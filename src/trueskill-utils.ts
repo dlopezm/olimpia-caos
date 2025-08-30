@@ -192,10 +192,66 @@ export const calculateTrueSkillRatings = (
       newRatings[0],
       newRatings[1],
     );
+
+    // Store snapshot of all players' TrueSkill stats at this point in time
+    const snapshot: { [playerId: string]: { mu: number; sigma: number; conservativeRating: number; playerName: string } } = {};
+    playerRatings.forEach((playerTrueSkill) => {
+      snapshot[playerTrueSkill.playerId] = {
+        mu: playerTrueSkill.mu,
+        sigma: playerTrueSkill.sigma,
+        conservativeRating: playerTrueSkill.conservativeRating,
+        playerName: playerTrueSkill.playerName,
+      };
+    });
+    
+    // Store the snapshot on the match (mutating the original match object)
+    match.playerTSSnapshot = snapshot;
   });
 
   // Return all player ratings sorted by μ (highest first)
   return Array.from(playerRatings.values()).sort((a, b) => b.mu - a.mu);
+};
+
+// Helper function to get player TrueSkill data from a match snapshot
+export const getPlayerTrueSkillFromSnapshot = (
+  match: MatchResult,
+  playerId: string,
+): PlayerTrueSkill | null => {
+  if (!match.playerTSSnapshot || !match.playerTSSnapshot[playerId]) {
+    return null;
+  }
+  
+  const snapshot = match.playerTSSnapshot[playerId];
+  return {
+    playerId,
+    playerName: snapshot.playerName,
+    mu: snapshot.mu,
+    sigma: snapshot.sigma,
+    conservativeRating: snapshot.conservativeRating,
+  };
+};
+
+// Helper function to get all players' TrueSkill data from a match snapshot
+export const getAllPlayerTrueSkillFromSnapshot = (
+  match: MatchResult,
+): Map<string, PlayerTrueSkill> => {
+  const result = new Map<string, PlayerTrueSkill>();
+  
+  if (!match.playerTSSnapshot) {
+    return result;
+  }
+  
+  Object.entries(match.playerTSSnapshot).forEach(([playerId, snapshot]) => {
+    result.set(playerId, {
+      playerId,
+      playerName: snapshot.playerName,
+      mu: snapshot.mu,
+      sigma: snapshot.sigma,
+      conservativeRating: snapshot.conservativeRating,
+    });
+  });
+  
+  return result;
 };
 
 // Get current TrueSkill ratings for all players
@@ -423,10 +479,15 @@ export const getPlayerMu = (playerId: string): number => {
 
 // Update players with their TrueSkill μ values
 export const updatePlayersWithTrueSkill = (players: Player[]): Player[] => {
-  return players.map((player) => ({
-    ...player,
-    mu: getPlayerMu(player._id),
-  }));
+  return players.map((player) => {
+    const playerTrueSkill = playerRatings.get(player._id);
+    return {
+      ...player,
+      mu: getPlayerMu(player._id),
+      sigma: playerTrueSkill?.sigma,
+      conservativeRating: playerTrueSkill?.conservativeRating,
+    };
+  });
 };
 
 // Calculate enhanced average with TrueSkill bonus

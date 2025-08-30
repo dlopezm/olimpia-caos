@@ -120,6 +120,7 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
           <span className="header-cell">Abans</span>
           <span className="header-cell">Després</span>
           <span className="header-cell">Canvi</span>
+          <span className="header-cell">Actual</span>
         </div>
 
         <div className="ratings-row">
@@ -127,6 +128,7 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
           <span className="rating-value">{formatRating(beforeRating)}</span>
           <span className="rating-value">{formatRating(afterRating)}</span>
           <span className="change-cell">{getRatingChangeDisplay()}</span>
+          <span className="current-value">{(player.mu || 25.0).toFixed(1)}</span>
         </div>
 
         <div className="ratings-row">
@@ -140,6 +142,7 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
           <span className="change-cell">
             {getEnhancedAverageChangeDisplay()}
           </span>
+          <span className="current-value">{(player.enhancedAverage || 0).toFixed(2)}</span>
         </div>
       </div>
     </div>

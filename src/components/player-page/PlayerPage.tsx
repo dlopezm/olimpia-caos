@@ -33,6 +33,20 @@ const renderStatRow = (value: number, label: string) => {
   );
 };
 
+const renderStatRowWithTooltip = (value: number, label: string, tooltip: string) => {
+  return (
+    <div className="stat-row">
+      <span className="stat-label" title={tooltip}>{label}:</span>
+      <span
+        className="stat-value"
+        style={{ backgroundColor: getBackgroundColor(value) }}
+      >
+        {value.toFixed(2)}
+      </span>
+    </div>
+  );
+};
+
 export const PlayerPage = () => {
   const { playerId } = useParams<{ playerId: string }>();
   const { getNonGuestPlayers, matches, loading, error } = useData();
@@ -366,6 +380,50 @@ export const PlayerPage = () => {
                         {player.currentStreak || "0"}
                       </span>
                     </div>
+                    <div className="stat-row">
+                      <span 
+                        className="stat-label" 
+                        title="Estimació més probable de l'habilitat del jugador. Sol estar entre 15 i 40"
+                      >
+                        TrueSkill:
+                      </span>
+                      <span className="stat-value trueskill-value">
+                        {(player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU).toFixed(1)}
+                      </span>
+                    </div>
+                    <div className="stat-row">
+                      <span 
+                        className="stat-label"
+                        title="Mitjana dels 5 atributs + TrueSkill / 5."
+                      >
+                        Mitjana + TS actual:
+                      </span>
+                      <span className="stat-value enhanced-avg-value">
+                        {(player.enhancedAverage || 0).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="stat-row">
+                      <span 
+                        className="stat-label"
+                        title="Incertesa sobre l'habilitat. Tendeix a la baixa com més partits juga. Típicament entre 1 i 9"
+                      >
+                        TS Sigma (σ):
+                      </span>
+                      <span className="stat-value sigma-value">
+                        {(player.sigma || TRUESKILL_CONSTANTS.DEFAULT_SIGMA).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="stat-row">
+                      <span 
+                        className="stat-label"
+                        title="La mínima habilitat que el sistema està 99% segur que té aquest jugador (TS - 3σ)."
+                      >
+                        TS Conservador:
+                      </span>
+                      <span className="stat-value conservative-value">
+                        {(player.conservativeRating || (player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU) - 3 * TRUESKILL_CONSTANTS.DEFAULT_SIGMA).toFixed(1)}
+                      </span>
+                    </div>
                   </>
                 )}
               </div>
@@ -373,10 +431,15 @@ export const PlayerPage = () => {
               <div className="attribute-stats">
                 <h3>Estadístiques</h3>
                 {renderStatRow(player.average, "Mitjana")}
-                {renderStatRow(player.enhancedAverage || 0, "Mitjana + TS")}
-                {renderStatRow(
+                {renderStatRowWithTooltip(
+                  player.enhancedAverage || 0, 
+                  "Mitjana + TS",
+                  "Mitjana tradicional amb bonus/penalització de TrueSkill"
+                )}
+                {renderStatRowWithTooltip(
                   player.mu || TRUESKILL_CONSTANTS.DEFAULT_MU,
                   "TrueSkill",
+                  "Estimació de l'habilitat del jugador segons el sistema TrueSkill"
                 )}
                 {renderStatRow(player.attack, "ATK")}
                 {renderStatRow(player.defense, "DEF")}

@@ -10,6 +10,8 @@ export interface Player {
   technique: number;
   average: number;
   mu?: number; // TrueSkill μ value
+  sigma?: number; // TrueSkill σ (uncertainty)
+  conservativeRating?: number; // TrueSkill conservative estimate (μ - 3σ)
   enhancedAverage?: number; // Pre-calculated enhanced average for performance
   winRate?: number; // Pre-calculated win rate for sorting
   currentStreak?: string; // Pre-calculated current streak for sorting
