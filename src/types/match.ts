@@ -6,9 +6,26 @@ export interface MatchResult {
   result: "white" | "dark" | "draw";
   localScore?: number;
   awayScore?: number;
-  localTeam: { _id: string; name: string; average?: number }[];
-  awayTeam: { _id: string; name: string; average?: number }[];
-  playerTSSnapshot?: { [playerId: string]: { mu: number; sigma: number; conservativeRating: number; playerName: string } };
+  localTeam: {
+    _id: string;
+    name: string;
+    average?: number;
+    isGuest?: boolean;
+  }[];
+  awayTeam: {
+    _id: string;
+    name: string;
+    average?: number;
+    isGuest?: boolean;
+  }[];
+  playerTSSnapshot?: {
+    [playerId: string]: {
+      mu: number;
+      sigma: number;
+      conservativeRating: number;
+      playerName: string;
+    };
+  };
 }
 
 // Alias for when we need the full Player objects

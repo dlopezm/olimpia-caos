@@ -4,7 +4,10 @@ import { Match, MatchResult } from "../../types/match";
 import { useMemo } from "react";
 import { Player } from "../../data/players";
 import { MatchCard, MatchPlayerDetails } from "../match";
-import { PlayerTrueSkill, getAllPlayerTrueSkillFromSnapshot } from "../../trueskill-utils";
+import {
+  PlayerTrueSkill,
+  getAllPlayerTrueSkillFromSnapshot,
+} from "../../trueskill-utils";
 import "./MatchPage.css";
 
 export const MatchPage = () => {
@@ -48,7 +51,7 @@ export const MatchPage = () => {
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
-    const currentMatchIndex = sortedMatches.findIndex(m => m._id === matchId);
+    const currentMatchIndex = sortedMatches.findIndex((m) => m._id === matchId);
     if (currentMatchIndex === -1) {
       return { beforeRatings: new Map() };
     }
@@ -89,10 +92,10 @@ export const MatchPage = () => {
       </div>
 
       <div className="match-content">
-        <MatchCard 
-          match={match} 
-          onExplore={handleExplore} 
-          compact={false} 
+        <MatchCard
+          match={match}
+          onExplore={handleExplore}
+          compact={false}
           beforeRatings={beforeRatings}
         />
 

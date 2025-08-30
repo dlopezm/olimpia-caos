@@ -51,6 +51,12 @@
   text-decoration: none;
 }
 
+.guest-player-name {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  cursor: default;
+}
+
 /* Smaller font in .compact mode */
 .team-names-list.compact-names {
   font-size: 0.75rem;

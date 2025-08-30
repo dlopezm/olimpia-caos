@@ -23,7 +23,9 @@ export const MatchPlayerDetails: React.FC<MatchPlayerDetailsProps> = ({
       );
 
       // Find current match index
-      const currentMatchIndex = sortedMatches.findIndex(m => m._id === match._id);
+      const currentMatchIndex = sortedMatches.findIndex(
+        (m) => m._id === match._id,
+      );
       if (currentMatchIndex === -1) {
         throw new Error(`Match with ID ${match._id} not found`);
       }
@@ -37,8 +39,8 @@ export const MatchPlayerDetails: React.FC<MatchPlayerDetailsProps> = ({
       // If no previous match, beforeRatings remains empty (initial state)
 
       // For "after" ratings: get snapshot from the current match
-      const currentMatchResult = allMatches.find(m => m._id === match._id);
-      const afterRatings = currentMatchResult 
+      const currentMatchResult = allMatches.find((m) => m._id === match._id);
+      const afterRatings = currentMatchResult
         ? getAllPlayerTrueSkillFromSnapshot(currentMatchResult)
         : new Map<string, PlayerTrueSkill>();
 

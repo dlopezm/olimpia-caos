@@ -31,11 +31,11 @@ export const allMatchesQuery = `*[_type == "match"] | order(date desc){
   localScore,
   awayScore,
   localTeam[]->{
-    _id, name, attack, defense, physical, vision, technique,
+    _id, name, attack, defense, physical, vision, technique, isGuest,
     "average": (attack + defense + physical + vision + technique) / 5
   },
   awayTeam[]->{
-    _id, name, attack, defense, physical, vision, technique,
+    _id, name, attack, defense, physical, vision, technique, isGuest,
     "average": (attack + defense + physical + vision + technique) / 5
   }
 }`;

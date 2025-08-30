@@ -36,6 +36,7 @@ const initializePlayer = (
   playerId: string,
   playerName: string,
   initialRating?: number,
+  isGuest: boolean = false,
 ): PlayerTrueSkill => {
   let mu: number;
   let sigma: number;
@@ -43,12 +44,16 @@ const initializePlayer = (
   if (initialRating !== undefined) {
     // Use the 1-5 rating to seed TrueSkill
     mu = ratingToMu(initialRating);
-    sigma = TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
+    // Guest players have 2x the uncertainty
+    sigma = isGuest
+      ? TRUESKILL_CONSTANTS.DEFAULT_SIGMA * 2
+      : TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
   } else {
     // Fall back to default TrueSkill values
     const rating = ts.createRating();
     mu = rating.mu;
-    sigma = rating.sigma;
+    // Guest players have 2x the uncertainty
+    sigma = isGuest ? rating.sigma * 2 : rating.sigma;
   }
 
   const playerSkill: PlayerTrueSkill = {
@@ -68,9 +73,10 @@ const getPlayerRating = (
   playerId: string,
   playerName: string,
   initialRating?: number,
+  isGuest: boolean = false,
 ): PlayerTrueSkill => {
   if (!playerRatings.has(playerId)) {
-    return initializePlayer(playerId, playerName, initialRating);
+    return initializePlayer(playerId, playerName, initialRating, isGuest);
   }
   return playerRatings.get(playerId)!;
 };
@@ -78,10 +84,10 @@ const getPlayerRating = (
 // Convert match result to TrueSkill format
 const convertMatchToTrueSkill = (match: MatchResult) => {
   const localTeam = match.localTeam.map((p) =>
-    getPlayerRating(p._id, p.name, p.average),
+    getPlayerRating(p._id, p.name, p.average, p.isGuest),
   );
   const awayTeam = match.awayTeam.map((p) =>
-    getPlayerRating(p._id, p.name, p.average),
+    getPlayerRating(p._id, p.name, p.average, p.isGuest),
   );
 
   // Convert to TrueSkill format using ts-trueskill Rating objects
@@ -147,23 +153,33 @@ const updatePlayerRatings = (
   awayTeam: PlayerTrueSkill[],
   newLocalRatings: Rating[],
   newAwayRatings: Rating[],
+  localPlayers: any[],
+  awayPlayers: any[],
 ) => {
-  // Update local team ratings
+  // Update local team ratings (skip guest players)
   localTeam.forEach((player, index) => {
-    const newRating = newLocalRatings[index];
-    player.mu = newRating.mu;
-    player.sigma = newRating.sigma;
-    player.conservativeRating = newRating.mu - 3 * newRating.sigma;
-    playerRatings.set(player.playerId, player);
+    const isGuest = localPlayers[index]?.isGuest || false;
+    if (!isGuest) {
+      const newRating = newLocalRatings[index];
+      player.mu = newRating.mu;
+      player.sigma = newRating.sigma;
+      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+      playerRatings.set(player.playerId, player);
+    }
+    // Guest players keep their original ratings unchanged
   });
 
-  // Update away team ratings
+  // Update away team ratings (skip guest players)
   awayTeam.forEach((player, index) => {
-    const newRating = newAwayRatings[index];
-    player.mu = newRating.mu;
-    player.sigma = newRating.sigma;
-    player.conservativeRating = newRating.mu - 3 * newRating.sigma;
-    playerRatings.set(player.playerId, player);
+    const isGuest = awayPlayers[index]?.isGuest || false;
+    if (!isGuest) {
+      const newRating = newAwayRatings[index];
+      player.mu = newRating.mu;
+      player.sigma = newRating.sigma;
+      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+      playerRatings.set(player.playerId, player);
+    }
+    // Guest players keep their original ratings unchanged
   });
 };
 
@@ -191,10 +207,19 @@ export const calculateTrueSkillRatings = (
       matchData.awayTeam,
       newRatings[0],
       newRatings[1],
+      match.localTeam,
+      match.awayTeam,
     );
 
     // Store snapshot of all players' TrueSkill stats at this point in time
-    const snapshot: { [playerId: string]: { mu: number; sigma: number; conservativeRating: number; playerName: string } } = {};
+    const snapshot: {
+      [playerId: string]: {
+        mu: number;
+        sigma: number;
+        conservativeRating: number;
+        playerName: string;
+      };
+    } = {};
     playerRatings.forEach((playerTrueSkill) => {
       snapshot[playerTrueSkill.playerId] = {
         mu: playerTrueSkill.mu,
@@ -203,7 +228,7 @@ export const calculateTrueSkillRatings = (
         playerName: playerTrueSkill.playerName,
       };
     });
-    
+
     // Store the snapshot on the match (mutating the original match object)
     match.playerTSSnapshot = snapshot;
   });
@@ -220,7 +245,7 @@ export const getPlayerTrueSkillFromSnapshot = (
   if (!match.playerTSSnapshot || !match.playerTSSnapshot[playerId]) {
     return null;
   }
-  
+
   const snapshot = match.playerTSSnapshot[playerId];
   return {
     playerId,
@@ -236,11 +261,11 @@ export const getAllPlayerTrueSkillFromSnapshot = (
   match: MatchResult,
 ): Map<string, PlayerTrueSkill> => {
   const result = new Map<string, PlayerTrueSkill>();
-  
+
   if (!match.playerTSSnapshot) {
     return result;
   }
-  
+
   Object.entries(match.playerTSSnapshot).forEach(([playerId, snapshot]) => {
     result.set(playerId, {
       playerId,
@@ -250,7 +275,7 @@ export const getAllPlayerTrueSkillFromSnapshot = (
       conservativeRating: snapshot.conservativeRating,
     });
   });
-  
+
   return result;
 };
 
@@ -289,6 +314,7 @@ export const calculateTrueSkillRatingsUpToMatch = (
       playerId: string,
       playerName: string,
       initialRating?: number,
+      isGuest: boolean = false,
     ): PlayerTrueSkill => {
       if (!tempRatings.has(playerId)) {
         let mu: number;
@@ -296,11 +322,15 @@ export const calculateTrueSkillRatingsUpToMatch = (
 
         if (initialRating !== undefined) {
           mu = ratingToMu(initialRating);
-          sigma = TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
+          // Guest players have 2x the uncertainty
+          sigma = isGuest
+            ? TRUESKILL_CONSTANTS.DEFAULT_SIGMA * 2
+            : TRUESKILL_CONSTANTS.DEFAULT_SIGMA;
         } else {
           const rating = ts.createRating();
           mu = rating.mu;
-          sigma = rating.sigma;
+          // Guest players have 2x the uncertainty
+          sigma = isGuest ? rating.sigma * 2 : rating.sigma;
         }
 
         const playerSkill: PlayerTrueSkill = {
@@ -317,10 +347,10 @@ export const calculateTrueSkillRatingsUpToMatch = (
     };
 
     const localTeam = match.localTeam.map((p) =>
-      getOrInitializeTempPlayer(p._id, p.name, p.average),
+      getOrInitializeTempPlayer(p._id, p.name, p.average, p.isGuest),
     );
     const awayTeam = match.awayTeam.map((p) =>
-      getOrInitializeTempPlayer(p._id, p.name, p.average),
+      getOrInitializeTempPlayer(p._id, p.name, p.average, p.isGuest),
     );
 
     // Convert to TrueSkill format
@@ -340,21 +370,29 @@ export const calculateTrueSkillRatingsUpToMatch = (
     // Calculate new ratings
     const newRatings = ts.rate([localRatings, awayRatings], ranks);
 
-    // Update temporary ratings
+    // Update temporary ratings (skip guest players)
     localTeam.forEach((player, index) => {
-      const newRating = newRatings[0][index];
-      player.mu = newRating.mu;
-      player.sigma = newRating.sigma;
-      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
-      tempRatings.set(player.playerId, player);
+      const isGuest = match.localTeam[index]?.isGuest || false;
+      if (!isGuest) {
+        const newRating = newRatings[0][index];
+        player.mu = newRating.mu;
+        player.sigma = newRating.sigma;
+        player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+        tempRatings.set(player.playerId, player);
+      }
+      // Guest players keep their original ratings unchanged
     });
 
     awayTeam.forEach((player, index) => {
-      const newRating = newRatings[1][index];
-      player.mu = newRating.mu;
-      player.sigma = newRating.sigma;
-      player.conservativeRating = newRating.mu - 3 * newRating.sigma;
-      tempRatings.set(player.playerId, player);
+      const isGuest = match.awayTeam[index]?.isGuest || false;
+      if (!isGuest) {
+        const newRating = newRatings[1][index];
+        player.mu = newRating.mu;
+        player.sigma = newRating.sigma;
+        player.conservativeRating = newRating.mu - 3 * newRating.sigma;
+        tempRatings.set(player.playerId, player);
+      }
+      // Guest players keep their original ratings unchanged
     });
   });
 
@@ -440,25 +478,37 @@ export const calculateTrueSkillRatingsIncludingMatch = (
   const afterRatings = new Map(ratingsBeforeMatch);
 
   localTeam.forEach((player, index) => {
-    const newRating = newRatings[0][index];
-    const updatedPlayer: PlayerTrueSkill = {
-      ...player,
-      mu: newRating.mu,
-      sigma: newRating.sigma,
-      conservativeRating: newRating.mu - 3 * newRating.sigma,
-    };
-    afterRatings.set(player.playerId, updatedPlayer);
+    const isGuest = targetMatch.localTeam[index]?.isGuest || false;
+    if (!isGuest) {
+      const newRating = newRatings[0][index];
+      const updatedPlayer: PlayerTrueSkill = {
+        ...player,
+        mu: newRating.mu,
+        sigma: newRating.sigma,
+        conservativeRating: newRating.mu - 3 * newRating.sigma,
+      };
+      afterRatings.set(player.playerId, updatedPlayer);
+    } else {
+      // Guest players keep their original ratings unchanged
+      afterRatings.set(player.playerId, player);
+    }
   });
 
   awayTeam.forEach((player, index) => {
-    const newRating = newRatings[1][index];
-    const updatedPlayer: PlayerTrueSkill = {
-      ...player,
-      mu: newRating.mu,
-      sigma: newRating.sigma,
-      conservativeRating: newRating.mu - 3 * newRating.sigma,
-    };
-    afterRatings.set(player.playerId, updatedPlayer);
+    const isGuest = targetMatch.awayTeam[index]?.isGuest || false;
+    if (!isGuest) {
+      const newRating = newRatings[1][index];
+      const updatedPlayer: PlayerTrueSkill = {
+        ...player,
+        mu: newRating.mu,
+        sigma: newRating.sigma,
+        conservativeRating: newRating.mu - 3 * newRating.sigma,
+      };
+      afterRatings.set(player.playerId, updatedPlayer);
+    } else {
+      // Guest players keep their original ratings unchanged
+      afterRatings.set(player.playerId, player);
+    }
   });
 
   return afterRatings;

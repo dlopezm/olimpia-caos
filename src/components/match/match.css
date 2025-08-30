@@ -203,8 +203,20 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
   transition: opacity 0.2s ease;
+}
+
+.clickable-player .player-info {
+  cursor: pointer;
+}
+
+.guest-player .player-info {
+  opacity: 0.7;
+}
+
+.guest-player .player-name {
+  font-style: italic;
+  color: var(--color-text-secondary);
 }
 
 .player-info:hover {

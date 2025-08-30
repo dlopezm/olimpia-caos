@@ -21,7 +21,9 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
   const navigate = useNavigate();
 
   const handlePlayerClick = () => {
-    navigate(`/jugador/${player._id}`);
+    if (!player.isGuest) {
+      navigate(`/jugador/${player._id}`);
+    }
   };
 
   // Calculate enhanced average from PlayerTrueSkill data by creating temporary player object
@@ -105,7 +107,11 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
 
   return (
     <div className="player-trueskill-display">
-      <div className="player-info" onClick={handlePlayerClick}>
+      <div
+        className={`player-info ${player.isGuest ? "guest-player" : "clickable-player"}`}
+        onClick={handlePlayerClick}
+        style={{ cursor: player.isGuest ? "default" : "pointer" }}
+      >
         <PlayerAvatar
           player={player}
           size={100}
@@ -128,7 +134,9 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
           <span className="rating-value">{formatRating(beforeRating)}</span>
           <span className="rating-value">{formatRating(afterRating)}</span>
           <span className="change-cell">{getRatingChangeDisplay()}</span>
-          <span className="current-value">{(player.mu || 25.0).toFixed(1)}</span>
+          <span className="current-value">
+            {(player.mu || 25.0).toFixed(1)}
+          </span>
         </div>
 
         <div className="ratings-row">
@@ -142,7 +150,9 @@ export const PlayerTrueSkillDisplay: React.FC<PlayerTrueSkillDisplayProps> = ({
           <span className="change-cell">
             {getEnhancedAverageChangeDisplay()}
           </span>
-          <span className="current-value">{(player.enhancedAverage || 0).toFixed(2)}</span>
+          <span className="current-value">
+            {(player.enhancedAverage || 0).toFixed(2)}
+          </span>
         </div>
       </div>
     </div>

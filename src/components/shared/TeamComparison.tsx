@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Player } from "../../data/players";
 import { CombinedBar } from "./CombinedBar";
 import "./TeamComparison.css";
-import { calculateEnhancedAverage, PlayerTrueSkill } from "../../trueskill-utils";
+import {
+  calculateEnhancedAverage,
+  PlayerTrueSkill,
+} from "../../trueskill-utils";
 
 type Props = {
   team1: Player[];
@@ -21,8 +24,10 @@ export const TeamComparison: React.FC<Props> = ({
   const navigate = useNavigate();
 
   // Helper function to navigate to player page
-  const handlePlayerClick = (playerId: string) => {
-    navigate(`/jugador/${playerId}`);
+  const handlePlayerClick = (player: Player) => {
+    if (!player.isGuest) {
+      navigate(`/jugador/${player._id}`);
+    }
   };
   // Summation logic
   const getTotals = (team: Player[]) =>
@@ -53,14 +58,17 @@ export const TeamComparison: React.FC<Props> = ({
   const totals2 = getTotals(team2);
 
   // Calculate TrueSkill averages for before/after if available
-  const getTeamTrueSkillAverage = (team: Player[], ratings: Map<string, PlayerTrueSkill> | undefined): number => {
+  const getTeamTrueSkillAverage = (
+    team: Player[],
+    ratings: Map<string, PlayerTrueSkill> | undefined,
+  ): number => {
     if (!ratings) return 0;
     const validRatings = team
-      .map(player => ratings.get(player._id))
-      .filter(rating => rating !== undefined)
-      .map(rating => rating!.mu);
-    return validRatings.length > 0 
-      ? validRatings.reduce((sum, mu) => sum + mu, 0) / validRatings.length 
+      .map((player) => ratings.get(player._id))
+      .filter((rating) => rating !== undefined)
+      .map((rating) => rating!.mu);
+    return validRatings.length > 0
+      ? validRatings.reduce((sum, mu) => sum + mu, 0) / validRatings.length
       : 0;
   };
 
@@ -129,8 +137,11 @@ export const TeamComparison: React.FC<Props> = ({
               {team1.map((p, index) => (
                 <React.Fragment key={p._id}>
                   <span
-                    className="clickable-player-name"
-                    onClick={() => handlePlayerClick(p._id)}
+                    className={
+                      p.isGuest ? "guest-player-name" : "clickable-player-name"
+                    }
+                    onClick={() => handlePlayerClick(p)}
+                    style={{ cursor: p.isGuest ? "default" : "pointer" }}
                   >
                     {p.name}
                   </span>
@@ -145,8 +156,11 @@ export const TeamComparison: React.FC<Props> = ({
               {team2.map((p, index) => (
                 <React.Fragment key={p._id}>
                   <span
-                    className="clickable-player-name"
-                    onClick={() => handlePlayerClick(p._id)}
+                    className={
+                      p.isGuest ? "guest-player-name" : "clickable-player-name"
+                    }
+                    onClick={() => handlePlayerClick(p)}
+                    style={{ cursor: p.isGuest ? "default" : "pointer" }}
                   >
                     {p.name}
                   </span>
