@@ -160,8 +160,8 @@ const updatePlayerRatings = (
   localTeam.forEach((player, index) => {
     const isGuest = localPlayers[index]?.isGuest || false;
     if (!isGuest) {
-    const newRating = newLocalRatings[index];
-    player.mu = newRating.mu;
+      const newRating = newLocalRatings[index];
+      player.mu = newRating.mu;
       player.sigma = newRating.sigma;
       player.conservativeRating = newRating.mu - 3 * newRating.sigma;
       playerRatings.set(player.playerId, player);
@@ -173,7 +173,7 @@ const updatePlayerRatings = (
   awayTeam.forEach((player, index) => {
     const isGuest = awayPlayers[index]?.isGuest || false;
     if (!isGuest) {
-    const newRating = newAwayRatings[index];
+      const newRating = newAwayRatings[index];
       player.mu = newRating.mu;
       player.sigma = newRating.sigma;
       player.conservativeRating = newRating.mu - 3 * newRating.sigma;

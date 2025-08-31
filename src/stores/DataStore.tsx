@@ -24,7 +24,6 @@ interface DataState {
 }
 
 interface DataContextType extends DataState {
-  refreshData: () => Promise<void>;
   getNonGuestPlayers: () => Player[];
 }
 
@@ -100,7 +99,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   const contextValue: DataContextType = {
     ...state,
-    refreshData: fetchAndProcessData,
     getNonGuestPlayers,
   };
 

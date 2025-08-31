@@ -5,6 +5,7 @@ export const allPlayersQuery = (
 ) => `*[_type == "player" && ${includeGuest ? "true" : "!isGuest"}]{
           _id,
           name,
+          nicknames,
           attack,
           defense,
           physical,
@@ -31,11 +32,11 @@ export const allMatchesQuery = `*[_type == "match"] | order(date desc){
   localScore,
   awayScore,
   localTeam[]->{
-    _id, name, attack, defense, physical, vision, technique, isGuest,
+    _id, name, nicknames, attack, defense, physical, vision, technique, isGuest,
     "average": (attack + defense + physical + vision + technique) / 5
   },
   awayTeam[]->{
-    _id, name, attack, defense, physical, vision, technique, isGuest,
+    _id, name, nicknames, attack, defense, physical, vision, technique, isGuest,
     "average": (attack + defense + physical + vision + technique) / 5
   }
 }`;

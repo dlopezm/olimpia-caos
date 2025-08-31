@@ -46,6 +46,7 @@
 .button-wrapper {
   display: flex;
   justify-content: center;
+  gap: 15px;
   margin-top: 20px;
 }
 
@@ -108,4 +109,12 @@
   padding: 10px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.paste-button {
+  background-color: #28a745;
+}
+
+.paste-button:hover:enabled {
+  background-color: #218838;
 }

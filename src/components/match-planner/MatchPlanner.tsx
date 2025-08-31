@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Player } from "../../data/players";
 import {
   generateTeams,
@@ -10,6 +10,7 @@ import "./MatchPlanner.css";
 import { ShareButton } from "./ShareButton";
 import { calculateEnhancedAverage } from "../../trueskill-utils";
 import { useData } from "../../stores/DataStore";
+import { PastePlayersModal } from "./PastePlayersModal";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -21,7 +22,7 @@ function getParamIds(param: string | null): string[] {
 }
 
 export const MatchPlanner = () => {
-  const { players, getNonGuestPlayers, loading, error } = useData();
+  const { players, loading, error } = useData();
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [shareMessage, setShareMessage] = useState<string>("");
   const [teams, setTeams] = useState<{
@@ -29,8 +30,12 @@ export const MatchPlanner = () => {
     team2: Player[];
     difference: number;
   } | null>(null);
+  const [showPasteModal, setShowPasteModal] = useState(false);
 
-  const nonGuestPlayers = getNonGuestPlayers();
+  const nonGuestPlayers = useMemo(
+    () => players.filter((player) => !player.isGuest),
+    [players],
+  );
 
   // Update the URL when teams change
   useEffect(() => {
@@ -113,6 +118,21 @@ export const MatchPlanner = () => {
     setTeams(teams);
   };
 
+  const handlePlayersMatched = (matchedPlayers: Player[]) => {
+    // Add matched players to selection
+    if (matchedPlayers.length > 0) {
+      setSelectedPlayers(matchedPlayers);
+
+      // Auto-generate teams if we have enough players (2 or more)
+      if (matchedPlayers.length >= 2) {
+        setTimeout(() => {
+          const teams = generateTeams(matchedPlayers, calculateEnhancedAverage);
+          setTeams(teams);
+        }, 100); // Small delay to ensure state updates
+      }
+    }
+  };
+
   const onClickPlayer = (player: Player) => {
     if (!teams) return;
     const playerIndex = teams.team1.indexOf(player);
@@ -157,9 +177,9 @@ export const MatchPlanner = () => {
     <div className="match-planner">
       <h3>Convocatòria</h3>
       <div className="player-list">
-        {nonGuestPlayers.map((player, index) => (
+        {nonGuestPlayers.map((player) => (
           <div
-            key={index}
+            key={player._id}
             className={`player-item ${
               selectedPlayers.includes(player) ? "selected" : ""
             }`}
@@ -171,6 +191,12 @@ export const MatchPlanner = () => {
       </div>
 
       <div className="button-wrapper">
+        <button
+          onClick={() => setShowPasteModal(true)}
+          className="button paste-button"
+        >
+          📋
+        </button>
         <button
           onClick={onGenerateTeams}
           className="button"
@@ -214,6 +240,13 @@ export const MatchPlanner = () => {
           <ShareButton text={shareMessage} />
         </>
       )}
+
+      <PastePlayersModal
+        isOpen={showPasteModal}
+        onClose={() => setShowPasteModal(false)}
+        players={nonGuestPlayers}
+        onPlayersMatched={handlePlayersMatched}
+      />
     </div>
   );
 };

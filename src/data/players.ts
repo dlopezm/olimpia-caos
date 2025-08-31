@@ -3,6 +3,7 @@ import { PlayerMatchStats } from "../match-stats-utils";
 export interface Player {
   _id: string;
   name: string;
+  nicknames?: string[]; // Array of alternative names/nicknames
   attack: number;
   defense: number;
   physical: number;

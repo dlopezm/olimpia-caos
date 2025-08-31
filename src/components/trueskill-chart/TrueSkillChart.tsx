@@ -157,38 +157,38 @@ export const TrueSkillChart: React.FC = () => {
       subtitle: {
         text: "Clica a la llegenda per mostrar/amagar jugadors",
       },
-              xAxis: {
-          type: "datetime",
-          title: {
-            text: "Data",
-          },
-          dateTimeLabelFormats: {
-            day: "%d/%m",
-            month: "%m/%Y",
-          },
-          plotLines: [
-            {
-              value: new Date("2025-08-21").getTime(), // Day before 22/08/2025
-              color: "#2196F3",
-              dashStyle: "Dash",
-              width: 2,
-              label: {
-                text: "TrueSkill introduït",
-                align: "right",
-                rotation: -90,
-                verticalAlign: "middle",
-                style: {
-                  color: "#2196F3",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                },
-                x: -10,
-                y: 0,
-              },
-              zIndex: 5,
-            },
-          ],
+      xAxis: {
+        type: "datetime",
+        title: {
+          text: "Data",
         },
+        dateTimeLabelFormats: {
+          day: "%d/%m",
+          month: "%m/%Y",
+        },
+        plotLines: [
+          {
+            value: new Date("2025-08-21").getTime(), // Day before 22/08/2025
+            color: "#2196F3",
+            dashStyle: "Dash",
+            width: 2,
+            label: {
+              text: "TrueSkill introduït",
+              align: "right",
+              rotation: -90,
+              verticalAlign: "middle",
+              style: {
+                color: "#2196F3",
+                fontWeight: "bold",
+                fontSize: "12px",
+              },
+              x: -10,
+              y: 0,
+            },
+            zIndex: 5,
+          },
+        ],
+      },
       yAxis: {
         title: {
           text:
@@ -224,7 +224,7 @@ export const TrueSkillChart: React.FC = () => {
           },
         ],
         // Explicitly set y-axis configuration for each metric
-        ...(selectedMetric === "winrate" 
+        ...(selectedMetric === "winrate"
           ? {
               min: 0,
               max: 100,
