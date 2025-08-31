@@ -1,7 +1,8 @@
 import { TrueSkill, Rating } from "ts-trueskill";
 import { Player } from "./data/players";
 import { TRUESKILL_CONSTANTS } from "./constants";
-import { MatchResult } from "./types/match";
+import { MatchResult, MatchPlayer } from "./types/match";
+
 export interface PlayerTrueSkill {
   playerId: string;
   playerName: string;
@@ -153,8 +154,8 @@ const updatePlayerRatings = (
   awayTeam: PlayerTrueSkill[],
   newLocalRatings: Rating[],
   newAwayRatings: Rating[],
-  localPlayers: Player[],
-  awayPlayers: Player[],
+  localPlayers: MatchPlayer[],
+  awayPlayers: MatchPlayer[],
 ) => {
   // Update local team ratings (skip guest players)
   localTeam.forEach((player, index) => {

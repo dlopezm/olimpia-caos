@@ -1,23 +1,20 @@
 import { Player } from "../data/players";
 
+export interface MatchPlayer {
+  _id: string;
+  name: string;
+  average?: number;
+  isGuest?: boolean;
+}
+
 export interface MatchResult {
   _id: string;
   date: string;
   result: "white" | "dark" | "draw";
   localScore?: number;
   awayScore?: number;
-  localTeam: {
-    _id: string;
-    name: string;
-    average?: number;
-    isGuest?: boolean;
-  }[];
-  awayTeam: {
-    _id: string;
-    name: string;
-    average?: number;
-    isGuest?: boolean;
-  }[];
+  localTeam: MatchPlayer[];
+  awayTeam: MatchPlayer[];
   playerTSSnapshot?: {
     [playerId: string]: {
       mu: number;
