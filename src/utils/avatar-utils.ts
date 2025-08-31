@@ -28,15 +28,15 @@ export const generatePlayerAvatar = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     top: player.avatar?.hair ? [player.avatar.hair as any] : [],
     hairColor: player.avatar?.hairColor ? [player.avatar.hairColor] : [],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     facialHair: player.avatar?.facialHair
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ? [player.avatar.facialHair as any]
       : [],
     facialHairColor: player.avatar?.facialHairColor
       ? [player.avatar.facialHairColor]
       : [],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accessories: player.avatar?.accessories
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ? [player.avatar.accessories as any]
       : [],
     accessoriesColor: player.avatar?.accessoriesColor

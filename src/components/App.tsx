@@ -4,6 +4,7 @@ import { PlayerList } from "./player-list/PlayerList";
 import { HistoricalMatches } from "./historical-matches/HistoricalMatches";
 import { PlayerPage } from "./player-page/PlayerPage";
 import { MatchPage } from "./match-page/MatchPage";
+import { TrueSkillChart } from "./trueskill-chart/TrueSkillChart";
 import { DataProvider } from "../stores/DataStore";
 import "./App.css";
 
@@ -25,13 +26,19 @@ const Navigation = () => {
         to="/historial"
         className={`nav-link ${isActive("/historial") ? "active" : ""}`}
       >
-        Historial de partits
+        Partits
       </Link>
       <Link
         to="/jugadors"
         className={`nav-link ${isActive("/jugadors") ? "active" : ""}`}
       >
-        Llista de jugadors
+        Jugadors
+      </Link>
+      <Link
+        to="/grafic-trueskill"
+        className={`nav-link ${isActive("/grafic-trueskill") ? "active" : ""}`}
+      >
+        Gràfics
       </Link>
     </nav>
   );
@@ -48,6 +55,7 @@ const AppContent = () => {
           <Route path="/jugadors" element={<PlayerList />} />
           <Route path="/jugador/:playerId" element={<PlayerPage />} />
           <Route path="/partit/:matchId" element={<MatchPage />} />
+          <Route path="/grafic-trueskill" element={<TrueSkillChart />} />
         </Routes>
       </main>
     </div>
