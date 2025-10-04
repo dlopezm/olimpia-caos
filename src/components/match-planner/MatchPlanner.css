@@ -118,3 +118,13 @@
 .paste-button:hover:enabled {
   background-color: #218838;
 }
+
+.analyze-button {
+  background-color: #17a2b8;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.analyze-button:hover:enabled {
+  background-color: #138496;
+}

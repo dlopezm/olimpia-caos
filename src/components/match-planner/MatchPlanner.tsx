@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Player } from "../../data/players";
 import {
   generateTeams,
+  generateAllTeamCombinations,
   sortTeamsAndUpdateDifference,
 } from "../../generate-teams";
 import { TeamView } from "./TeamView";
@@ -9,8 +10,10 @@ import { TeamComparison } from "../shared/TeamComparison";
 import "./MatchPlanner.css";
 import { ShareButton } from "./ShareButton";
 import { calculateEnhancedAverage } from "../../trueskill-utils";
+import { formatTeamForSharing } from "../../utils/team-utils";
 import { useData } from "../../stores/DataStore";
 import { PastePlayersModal } from "./PastePlayersModal";
+import { AllCombinationsTable } from "./AllCombinationsTable";
 
 function getParamIds(param: string | null): string[] {
   return (
@@ -31,6 +34,16 @@ export const MatchPlanner = () => {
     difference: number;
   } | null>(null);
   const [showPasteModal, setShowPasteModal] = useState(false);
+  const [showAllCombinations, setShowAllCombinations] = useState(false);
+  const [allCombinations, setAllCombinations] = useState<
+    Array<{
+      team1: Player[];
+      team2: Player[];
+      trueSkillDiff: number;
+      enhancedAvgDiff: number;
+      avgDiff: number;
+    }>
+  >([]);
 
   const nonGuestPlayers = useMemo(
     () => players.filter((player) => !player.isGuest),
@@ -87,19 +100,9 @@ export const MatchPlanner = () => {
   useEffect(() => {
     if (!teams) return;
 
-    const formatTeam = (players: Player[], symbol: string) => {
-      const average =
-        players.reduce((acc, p) => acc + calculateEnhancedAverage(p), 0) /
-        players.length;
-      return [
-        `Equip ${symbol}: ${average.toFixed(2)}`,
-        ...players.map((p) => ` ${symbol} ${p.name}`),
-      ].join("\n");
-    };
-
     const output = [
-      `${formatTeam(teams.team1, "▫️")}`,
-      `${formatTeam(teams.team2, "◾️")}`,
+      formatTeamForSharing(teams.team1, "▫️"),
+      formatTeamForSharing(teams.team2, "◾️"),
     ].join("\n");
     setShareMessage(output);
     console.log(output);
@@ -116,6 +119,15 @@ export const MatchPlanner = () => {
   const onGenerateTeams = () => {
     const teams = generateTeams(selectedPlayers, calculateEnhancedAverage);
     setTeams(teams);
+  };
+
+  const onAnalyzeAllCombinations = () => {
+    const combinations = generateAllTeamCombinations(
+      selectedPlayers,
+      calculateEnhancedAverage,
+    );
+    setAllCombinations(combinations);
+    setShowAllCombinations(true);
   };
 
   const handlePlayersMatched = (matchedPlayers: Player[]) => {
@@ -204,6 +216,20 @@ export const MatchPlanner = () => {
         >
           Genera equips
         </button>
+        <button
+          onClick={onAnalyzeAllCombinations}
+          className="button analyze-button"
+          disabled={selectedPlayers.length < 4 || selectedPlayers.length > 12}
+          title={
+            selectedPlayers.length < 4
+              ? "Mínim 4 jugadors"
+              : selectedPlayers.length > 12
+                ? "Màxim 12 jugadors (massa combinacions)"
+                : "Analitza totes les combinacions possibles"
+          }
+        >
+          📊 Analitza totes
+        </button>
       </div>
 
       {teams && (
@@ -247,6 +273,13 @@ export const MatchPlanner = () => {
         players={nonGuestPlayers}
         onPlayersMatched={handlePlayersMatched}
       />
+
+      {showAllCombinations && (
+        <AllCombinationsTable
+          combinations={allCombinations}
+          onClose={() => setShowAllCombinations(false)}
+        />
+      )}
     </div>
   );
 };
