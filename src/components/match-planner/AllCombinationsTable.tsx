@@ -85,7 +85,7 @@ export const AllCombinationsTable = ({
         if (lightIds.length > 0) params.set("light", lightIds.join(","));
         if (darkIds.length > 0) params.set("dark", darkIds.join(","));
 
-        const combinationUrl = `${window.location.origin}/match-planner?${params.toString()}`;
+        const combinationUrl = `${window.location.origin}/olimpia-caos?${params.toString()}`;
 
         return [
           `=== Combinació ${idx + 1} ===`,
