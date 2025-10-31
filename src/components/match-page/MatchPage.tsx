@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useData } from "../../stores/DataStore";
 import { Match, MatchResult } from "../../types/match";
 import { useMemo } from "react";
@@ -13,6 +13,7 @@ import "./MatchPage.css";
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
   const { matches: rawMatches, players, loading, error } = useData();
+  const navigate = useNavigate();
 
   // Convert MatchResult to Match by finding full player objects
   const matches: Match[] = useMemo(() => {
@@ -79,7 +80,24 @@ export const MatchPage = () => {
   }
 
   const handleExplore = () => {
-    // Do nothing - we're already on the match page
+    if (!match) return;
+
+    // Extract player IDs and create short IDs (first 5 characters) for URL
+    const localPlayerIds = match.localTeam.map((player) =>
+      player._id.slice(0, 5),
+    );
+    const awayPlayerIds = match.awayTeam.map((player) =>
+      player._id.slice(0, 5),
+    );
+
+    // Create URL parameters for the match planner
+    const params = new URLSearchParams();
+    if (localPlayerIds.length > 0)
+      params.set("light", localPlayerIds.join(","));
+    if (awayPlayerIds.length > 0) params.set("dark", awayPlayerIds.join(","));
+
+    // Navigate to match planner with the players
+    navigate(`/?${params.toString()}`);
   };
 
   return (
