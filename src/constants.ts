@@ -12,12 +12,12 @@ export const TRUESKILL_CONSTANTS = {
   // Rating conversion constants
   MIN_RATING: 1,
   MAX_RATING: 5,
-  MIN_MU: 18, // Minimum μ value from 1-5 rating conversion
-  MAX_MU: 33, // Maximum μ value from 1-5 rating conversion
+  MIN_MU: 15, // Minimum μ value from 1-5 rating conversion
+  MAX_MU: 35, // Maximum μ value from 1-5 rating conversion
 
   // Enhanced average calculation
   MU_BONUS_DIVISOR: 10, // Divisor for (μ-25)/10 calculation
-  MU_BASELINE: 25.0, // Baseline μ value for bonus calculation
+  MU_BASELINE: 20.0, // Baseline μ value for bonus calculation
 } as const;
 
 // CSS Class Names

@@ -75,31 +75,60 @@ export const TeamComparison: React.FC<Props> = ({
   const team1BeforeTS = getTeamTrueSkillAverage(team1, beforeRatings);
   const team2BeforeTS = getTeamTrueSkillAverage(team2, beforeRatings);
 
-  const baseMetrics = [
+  // Calculate pre-match enhanced averages for each team
+  const getTeamPreMatchEnhancedAverage = (
+    team: Player[],
+    ratings: Map<string, PlayerTrueSkill> | undefined,
+  ): number => {
+    if (!ratings) return 0;
+    const enhancedAverages = team.map((player) => {
+      const beforeRating = ratings.get(player._id);
+      if (!beforeRating) return player.average; // fallback to base average if no before rating
+
+      // Create temporary player object with pre-match TrueSkill mu
+      const tempPlayer: Player = { ...player, mu: beforeRating.mu };
+      return calculateEnhancedAverage(tempPlayer);
+    });
+    return enhancedAverages.length > 0
+      ? enhancedAverages.reduce((sum, avg) => sum + avg, 0) /
+          enhancedAverages.length
+      : 0;
+  };
+
+  const team1PreMatchEnhanced = getTeamPreMatchEnhancedAverage(
+    team1,
+    beforeRatings,
+  );
+  const team2PreMatchEnhanced = getTeamPreMatchEnhancedAverage(
+    team2,
+    beforeRatings,
+  );
+
+  const metrics = [
     {
-      label: "Mitjana",
+      label: "Mitjana Actual",
       left: totals1.enhancedAverage / team1.length,
       right: totals2.enhancedAverage / team2.length,
     },
+    beforeRatings && team1PreMatchEnhanced > 0 && team2PreMatchEnhanced > 0
+      ? {
+          label: "Mitjana pre-partit",
+          left: team1PreMatchEnhanced,
+          right: team2PreMatchEnhanced,
+        }
+      : null,
     {
       label: "TS Actual",
       left: totals1.trueSkill / team1.length,
       right: totals2.trueSkill / team2.length,
     },
-  ];
-
-  const trueSkillMetrics = [];
-  if (beforeRatings && team1BeforeTS > 0 && team2BeforeTS > 0) {
-    trueSkillMetrics.push({
-      label: "TS pre-partit",
-      left: team1BeforeTS,
-      right: team2BeforeTS,
-    });
-  }
-
-  const metrics = [
-    ...baseMetrics,
-    ...trueSkillMetrics,
+    beforeRatings && team1BeforeTS > 0 && team2BeforeTS > 0
+      ? {
+          label: "TS pre-partit",
+          left: team1BeforeTS,
+          right: team2BeforeTS,
+        }
+      : null,
     {
       label: "Atac",
       left: totals1.attack / team1.length,
@@ -125,7 +154,7 @@ export const TeamComparison: React.FC<Props> = ({
       left: totals1.technique / team1.length,
       right: totals2.technique / team2.length,
     },
-  ];
+  ].filter((metric) => metric !== null);
 
   return (
     <div className={`team-comparison ${compact ? "compact" : ""}`}>

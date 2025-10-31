@@ -548,5 +548,5 @@ export const calculateEnhancedAverage = (player: Player): number => {
   const muBonus =
     (mu - TRUESKILL_CONSTANTS.MU_BASELINE) /
     TRUESKILL_CONSTANTS.MU_BONUS_DIVISOR;
-  return baseAverage * 0.9 + muBonus;
+  return (baseAverage + muBonus) * 0.9; // 0.9 is there to preserve the average close to what it was
 };
